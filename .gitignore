@@ -1,0 +1,5 @@
+bdds/*
+pdfs/*
+.env
+/*/__pychache__/*
+*.pyc
