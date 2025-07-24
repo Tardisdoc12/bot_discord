@@ -28,7 +28,14 @@ from functions.tags import (
 from functions.profil_user import (
     create_profile,
 )
-from functions.users import register_members, register_member
+from functions.users import register_member
+from functions.urls import (
+    get_urls_from_user,
+    create_url,
+    update_url_from_user,
+    delete_url_from_user,
+)
+
 from bdd.init_bdd import (
     init_db,
 )
@@ -133,8 +140,49 @@ async def get_profile(interaction: discord.Interaction, user_name : str = None) 
         await interaction.response.send_message(embed=profile_embed)
 
 ################################################################################
+# COMMANDS URLS:
+
+@bot.tree.command(name="add_urls", description="Ajoute une url au profil")
+async def add_urls(interaction: discord.Interaction, url : str):
+    register_member(interaction)
+    if not check_channel_id(interaction, id_channel_command):
+        return
+    create_url(interaction.user.id, url)
+    await interaction.response.send_message(f"URL {url} ajoutée.")
+
+@bot.tree.command(name="update_urls", description="Met à jour une url")
+async def update_urls(interaction: discord.Interaction, new_url : str, old_url : str):
+    register_member(interaction)
+    if not check_channel_id(interaction, id_channel_command):
+        return
+    update_url_from_user(interaction, old_url, new_url)
+    await interaction.response.send_message(f"URL {new_url} mis à jour.")
+
+@bot.tree.command(name="delete_urls", description="Supprime une url")
+async def delete_urls(interaction: discord.Interaction, url : str):
+    register_member(interaction)
+    if not check_channel_id(interaction, id_channel_command):
+        return
+    delete_url_from_user(interaction, url)
+    await interaction.response.send_message(f"URL {url} supprimée.")
+
+@bot.tree.command(name="get_urls_user", description="Donne toutes les urls d'un utilisateur")
+async def get_urls_user(interaction: discord.Interaction, user_name : str = None):
+    register_member(interaction)
+    if not check_channel_id(interaction, id_channel_command):
+        return
+    urls = get_urls_from_user(interaction, user_name if user_name else interaction.user.id)
+    if urls == []:
+        await interaction.response.send_message("Aucune URL n'a été ajoutée.")
+    else:
+        urls = ["\t" + url for url in urls]
+        urls = ",\n".join(urls)
+        await interaction.response.send_message(urls)
+
+################################################################################
 # AUTOCOMPLETE COMMANDS:
 
+@get_urls_user.autocomplete("user_name")
 @get_profile.autocomplete("user_name")
 @get_tags_user.autocomplete("user_name")
 @resume_give.autocomplete("nom")
@@ -148,10 +196,24 @@ async def nom_autocomplete(interaction: discord.Interaction, current: str):
 @delete_tag_user.autocomplete("tag")
 @get_users_from_tag.autocomplete("tag")
 @add_tag.autocomplete("tag")
-async def name_tags(interaction: discord.Interaction, tag : str):
+async def name_tags(interaction: discord.Interaction, current_input : str):
     tags_name = []
-    for tag in tags[:25]:
-        tags_name.append(app_commands.Choice(name=tag, value=tag))
+
+    # Liste de tous les tags possibles (ex: récupérés depuis ta base de données ou en mémoire)
+    all_tags = tags  # Assure-toi que `tags` est une liste accessible ici
+
+    # Filtrage intelligent : on garde les tags contenant la saisie (insensible à la casse)
+    filtered = sorted(
+        [tag for tag in all_tags if current_input.lower() in tag.lower()],
+        key=lambda x: x.lower().find(current_input.lower())
+    )
+
+    # Limite à 25 suggestions max
+    filtered = filtered[:25]
+
+    # Création des objets Choice
+    tags_name = [app_commands.Choice(name=tag, value=tag) for tag in filtered]
+
     return tags_name
 
 ################################################################################

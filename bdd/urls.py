@@ -7,6 +7,8 @@
 
 import sqlite3
 
+from bdd.users import get_user_id_from_user_name
+
 ################################################################################
 
 base_de_donnees_path = "bdds/jobs.db"
@@ -19,6 +21,13 @@ def get_urls_from_user_id(id : int) -> list:
     cursor.execute("SELECT url FROM urls WHERE user_id = ?", (id,))
     urls = cursor.fetchall()
     conn.close()
+    return urls
+
+################################################################################
+
+def get_urls_from_user_name(user_name : str) -> list:
+    id = get_user_id_from_user_name(user_name)
+    urls = get_urls_from_user_id(id)
     return urls
 
 ################################################################################

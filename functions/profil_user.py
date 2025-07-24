@@ -7,6 +7,10 @@
 
 import discord
 
+from bdd.urls import (
+    get_urls_from_user_name,
+    get_urls_from_user_id
+)
 from functions.tags import get_tags_from_user_id_or_name
 from bdd.users import get_user_name_from_user_id
 
@@ -17,7 +21,8 @@ def get_profil(user_name : str, tags : list, urls : list, photo : str) -> str:
         title=f"📋 Profil de {user_name}",
         color=discord.Color.teal()
     )
-    discord_embed.add_field(name="Tags:", value="\n".join(tags), inline=True)
+    if tags != []:
+        discord_embed.add_field(name="Tags:", value="\n".join(tags), inline=True)
     if urls != []:
         discord_embed.add_field(name="Urls:", value="\n".join(urls), inline=True)
     discord_embed.set_thumbnail(url=photo)
@@ -51,9 +56,15 @@ async def create_profile(user_name : str, interaction: discord.Interaction) -> s
             return None
         user_name = user_name[0]
         avatar_url = user.avatar.url if user.avatar else user.default_avatar.url
+        urls = get_urls_from_user_id(user.id)
     else:
+        urls = get_urls_from_user_name(user_name)
         avatar_url = await get_profil_photo_user_name(user_name, interaction)
-    return get_profil(user_name, tags, [], avatar_url)
+    if urls:
+        urls = [url[0] for url in urls if url is not None]
+    else:
+        urls = []
+    return get_profil(user_name, tags if tags else [], urls, avatar_url)
 
 ################################################################################
 # End of File
