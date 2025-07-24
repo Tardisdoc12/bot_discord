@@ -32,7 +32,7 @@ def init_db():
     ################################################################################
 
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS user_resume (
+    CREATE TABLE IF NOT EXISTS resume (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         chemin TEXT NOT NULL,
         user_id TEXT NOT NULL,
@@ -44,27 +44,23 @@ def init_db():
     ################################################################################
 
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS recruiter (
+    CREATE TABLE IF NOT EXISTS tags_user (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        chemin TEXT NOT NULL,
+        tag TEXT NOT NULL,
         user_id TEXT NOT NULL,
-        company TEXT NOT NULL,
         FOREIGN KEY (user_id) REFERENCES users(user_id)
     )
     """)
-
-    ################################################################################
-
     conn.commit()
 
     ################################################################################
 
     cursor.execute("""
-    CREATE TABLE IF NOT EXISTS tags (
+    CREATE TABLE IF NOT EXISTS tags_jobs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        tags TEXT NOT NULL,
-        user_id TEXT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES users(user_id)
+        tag TEXT NOT NULL,
+        job_id TEXT NOT NULL,
+        FOREIGN KEY (job_id) REFERENCES jobs(id)
     )
     """)
     conn.commit()
@@ -75,6 +71,22 @@ def init_db():
         """
         CREATE TABLE IF NOT EXISTS urls (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            url TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(user_id)
+        )
+        """
+    )
+
+    ################################################################################
+
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS jobs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            company TEXT NOT NULL,
+            description TEXT NOT NULL,
             url TEXT NOT NULL,
             user_id TEXT NOT NULL,
             FOREIGN KEY (user_id) REFERENCES users(user_id)

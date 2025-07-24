@@ -11,7 +11,7 @@ from bdd.urls import (
     get_urls_from_user_name,
     get_urls_from_user_id
 )
-from functions.tags import get_tags_from_user_id_or_name
+from functions.tags_users import get_tags_from_user_id_or_name
 from bdd.users import get_user_name_from_user_id
 
 ################################################################################

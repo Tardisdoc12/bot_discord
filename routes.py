@@ -19,7 +19,7 @@ from functions.user_resume import (
     download_pdf,
     give_resume,
 )
-from functions.tags import (
+from functions.tags_users import (
     get_tags_for_user,
     get_users_name_from_tag,
     add_tags,
@@ -39,7 +39,7 @@ from functions.urls import (
 from bdd.init_bdd import (
     init_db,
 )
-from bdd.tags_bdd import (
+from bdd.tags_users_bdd import (
     tags,
 )
 
@@ -163,7 +163,7 @@ async def delete_urls(interaction: discord.Interaction, url : str):
     register_member(interaction)
     if not check_channel_id(interaction, id_channel_command):
         return
-    delete_url_from_user(interaction, url)
+    delete_url_from_user(interaction.user.id, url)
     await interaction.response.send_message(f"URL {url} supprimée.")
 
 @bot.tree.command(name="get_urls_user", description="Donne toutes les urls d'un utilisateur")

@@ -61,7 +61,7 @@ tags = [
 def get_tags_from_user_id(user_id : int) -> list:
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT tags FROM tags WHERE user_id = ?", (user_id,))
+    cursor.execute("SELECT tag FROM tags_user WHERE user_id = ?", (user_id,))
     tags = cursor.fetchall()
     tags = [tag[0] for tag in tags if tag is not None]
     conn.close()
@@ -72,7 +72,7 @@ def get_tags_from_user_id(user_id : int) -> list:
 def get_tags_from_user_name(user_name : str) -> list:
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT tags FROM tags INNER JOIN users ON tags.user_id = users.user_id WHERE user_name = ?", (user_name,))
+    cursor.execute("SELECT tag FROM tags_user INNER JOIN users ON tags.user_id = users.user_id WHERE user_name = ?", (user_name,))
     tags = cursor.fetchall()
     tags = list(set([tag[0] for tag in tags if tag is not None]))
     conn.close()
@@ -83,7 +83,7 @@ def get_tags_from_user_name(user_name : str) -> list:
 def get_all_tags() -> list:
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT tags FROM tags")
+    cursor.execute("SELECT tag FROM tags_user")
     tags = list(cursor.fetchall())
     tags = ", ".join(tags)
     conn.close()
@@ -94,7 +94,7 @@ def get_all_tags() -> list:
 def get_users_from_tag(tag : str) -> list:
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT user_name FROM users INNER JOIN tags ON tags.user_id = users.user_id WHERE tags = ?", (tag,))
+    cursor.execute("SELECT user_name FROM users INNER JOIN tags_user ON tags_user.user_id = users.user_id WHERE tag = ?", (tag,))
     users = cursor.fetchall()
     users = list(set([user[0] for user in users if user is not None]))
     conn.close()
@@ -108,7 +108,7 @@ def add_tag_to_user(user_id : int, tag : str) -> None:
         return
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO tags (user_id, tags) VALUES (?, ?)", (user_id, tag))
+    cursor.execute("INSERT INTO tags_user (user_id, tag) VALUES (?, ?)", (user_id, tag))
     conn.commit()
     conn.close()
 
@@ -117,7 +117,7 @@ def add_tag_to_user(user_id : int, tag : str) -> None:
 def delete_tag_user_id(user_id : int, tag : str) -> None:
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM tags WHERE user_id = ? AND tags = ?", (user_id, tag))
+    cursor.execute("DELETE FROM tags_user WHERE user_id = ? AND tag = ?", (user_id, tag))
     conn.commit()
     conn.close()
 

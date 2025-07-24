@@ -7,7 +7,7 @@
 
 import discord
 
-from bdd.tags_bdd import (
+from bdd.tags_users_bdd import (
     get_tags_from_user_name,
     get_all_tags,
     get_tags_from_user_id,
