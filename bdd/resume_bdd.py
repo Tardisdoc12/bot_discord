@@ -71,5 +71,15 @@ def verify_user_already_exist(id : int) -> bool:
     return True
 
 ################################################################################
+
+def get_user_name_from_user_id(user_id: int) -> str:
+    conn = sqlite3.connect(base_de_donnees_path)
+    cursor = conn.cursor()
+    cursor.execute("SELECT user_name FROM user_resume WHERE user_id = ?", (user_id,))
+    user_name = cursor.fetchone()
+    conn.close()
+    return user_name
+
+################################################################################
 # End of File
 ################################################################################

@@ -17,7 +17,6 @@ from bdd.resume_bdd import (
     get_user_cv_path,
     create_user_cv_path,
     update_user_cv_path,
-    delete_user_cv_path,
     get_user_cv_path_from_name,
     verify_user_already_exist,
 )
@@ -41,7 +40,8 @@ async def download_pdf(interaction: discord.Interaction, file: discord.Attachmen
             #ajout dans la bdd
             if verify_user_already_exist(interaction.user.id):
                 update_user_cv_path(interaction.user.id, chemin_complet)
-            create_user_cv_path(interaction.user.id, chemin_complet, interaction.user.name)
+            else:
+                create_user_cv_path(interaction.user.id, chemin_complet, interaction.user.name)
             
             await saving_pdf(chemin_complet, file, interaction)
             
@@ -66,9 +66,9 @@ async def give_resume(interaction: discord.Interaction, user_name : str = None):
         else:
             await interaction.response.send_message("Aucun fichier PDF attaché.")
     else:
-        chemin = get_user_cv_path(interaction.user.id)[0]
-        if chemin:
-            await interaction.response.send_message(file=discord.File(chemin))
+        chemin = get_user_cv_path(interaction.user.id)
+        if chemin is not None:
+            await interaction.response.send_message(file=discord.File(chemin[0]))
         else:
             await interaction.response.send_message("Aucun fichier PDF attaché.")
 
