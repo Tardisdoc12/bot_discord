@@ -72,7 +72,7 @@ def get_tags_from_user_id(user_id : int) -> list:
 def get_tags_from_user_name(user_name : str) -> list:
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT tags FROM tags INNER JOIN user_resume ON tags.user_id = user_resume.user_id WHERE user_name = ?", (user_name,))
+    cursor.execute("SELECT tags FROM tags INNER JOIN users ON tags.user_id = users.user_id WHERE user_name = ?", (user_name,))
     tags = cursor.fetchall()
     tags = list(set([tag[0] for tag in tags if tag is not None]))
     conn.close()
@@ -94,7 +94,7 @@ def get_all_tags() -> list:
 def get_users_from_tag(tag : str) -> list:
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT user_name FROM user_resume INNER JOIN tags ON tags.user_id = user_resume.user_id WHERE tags = ?", (tag,))
+    cursor.execute("SELECT user_name FROM users INNER JOIN tags ON tags.user_id = users.user_id WHERE tags = ?", (tag,))
     users = cursor.fetchall()
     users = list(set([user[0] for user in users if user is not None]))
     conn.close()

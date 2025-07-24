@@ -28,6 +28,7 @@ from functions.tags import (
 from functions.profil_user import (
     create_profile,
 )
+from functions.users import register_members, register_member
 from bdd.init_bdd import (
     init_db,
 )
@@ -65,6 +66,7 @@ async def on_ready():
 
 @bot.tree.command(name="resume_send", description="Sauvegarde le CV de l'utilisateur")
 async def resume_send(interaction: discord.Interaction, fichier: discord.Attachment):
+    register_member(interaction)
     if not check_channel_id(interaction, id_channel_command):
         return
     await download_pdf(interaction, fichier)
@@ -80,6 +82,7 @@ async def resume_give(interaction: discord.Interaction, nom : str = None):
 
 @bot.tree.command(name="add_tags", description="ajoute un tag au profil")
 async def add_tag(interaction: discord.Interaction, tag : str):
+    register_member(interaction)
     if not check_channel_id(interaction, id_channel_command):
         return
     if tag in tags:
@@ -89,24 +92,28 @@ async def add_tag(interaction: discord.Interaction, tag : str):
 
 @bot.tree.command(name="get_tags", description="Donne tous les tags")
 async def get_tags(interaction: discord.Interaction):
+    register_member(interaction)
     if not check_channel_id(interaction, id_channel_command):
         return
     await interaction.response.send_message(", ".join(tags))
 
 @bot.tree.command(name="get_tags_user", description="Donne tous les tags d'un utilisateur")
 async def get_tags_user(interaction: discord.Interaction, user_name : str = None):
+    register_member(interaction)
     if not check_channel_id(interaction, id_channel_command):
         return
     await get_tags_for_user(interaction, user_name)
 
 @bot.tree.command(name="get_users_from_tag", description="Donne tous les utilisateurs ayant un tag")
 async def get_users_from_tag(interaction: discord.Interaction, tag : str):
+    register_member(interaction)
     if not check_channel_id(interaction, id_channel_command):
         return
     await get_users_name_from_tag(tag, interaction)
 
 @bot.tree.command(name="delete_tag_user", description="Supprime un tag de l'utilisateur")
 async def delete_tag_user(interaction: discord.Interaction, tag : str):
+    register_member(interaction)
     if not check_channel_id(interaction, id_channel_command):
         return
     await delete_tag(interaction, tag)
@@ -116,6 +123,7 @@ async def delete_tag_user(interaction: discord.Interaction, tag : str):
 
 @bot.tree.command(name="get_profile", description="Donne le profil de l'utilisateur")
 async def get_profile(interaction: discord.Interaction, user_name : str = None) -> str:
+    register_member(interaction)
     if not check_channel_id(interaction, id_channel_command):
         return
     profile_embed = await create_profile(user_name, interaction)

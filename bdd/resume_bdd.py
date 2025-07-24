@@ -26,17 +26,17 @@ def get_user_cv_path(id : int) -> str:
 def get_user_cv_path_from_name(name : str) -> str:
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT chemin FROM user_resume WHERE user_name = ?", (name,))
+    cursor.execute("SELECT chemin FROM user_resume INNER JOIN users ON user_resume.user_id = users.user_id WHERE user_name = ?", (name,))
     chemin = cursor.fetchone()
     conn.close()
     return chemin
 
 ################################################################################
 
-def create_user_cv_path(user_id : int, chemin : str, user_name : str) -> None:
+def create_user_cv_path(user_id : int, chemin : str) -> None:
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO user_resume (user_id, chemin, user_name) VALUES (?, ?, ?)", (user_id, chemin, user_name))
+    cursor.execute("INSERT INTO user_resume (user_id, chemin) VALUES (?, ?)", (user_id, chemin))
     conn.commit()
     conn.close()
 
@@ -69,16 +69,6 @@ def verify_user_already_exist(id : int) -> bool:
     if result is None:
         return False
     return True
-
-################################################################################
-
-def get_user_name_from_user_id(user_id: int) -> str:
-    conn = sqlite3.connect(base_de_donnees_path)
-    cursor = conn.cursor()
-    cursor.execute("SELECT user_name FROM user_resume WHERE user_id = ?", (user_id,))
-    user_name = cursor.fetchone()
-    conn.close()
-    return user_name
 
 ################################################################################
 # End of File

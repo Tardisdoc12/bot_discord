@@ -8,7 +8,7 @@
 import discord
 
 from functions.tags import get_tags_from_user_id_or_name
-from bdd.resume_bdd import get_user_name_from_user_id
+from bdd.users import get_user_name_from_user_id
 
 ################################################################################
 

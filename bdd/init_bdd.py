@@ -21,11 +21,22 @@ def init_db():
     ################################################################################
 
     cursor.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_name TEXT NOT NULL,
+            user_id TEXT NOT NULL
+        )
+    """)
+    conn.commit()
+
+    ################################################################################
+
+    cursor.execute("""
     CREATE TABLE IF NOT EXISTS user_resume (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         chemin TEXT NOT NULL,
         user_id TEXT NOT NULL,
-        user_name TEXT NOT NULL
+        FOREIGN KEY (user_id) REFERENCES users(user_id)
     )
     """)
     conn.commit()
@@ -37,7 +48,8 @@ def init_db():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         chemin TEXT NOT NULL,
         user_id TEXT NOT NULL,
-        company TEXT NOT NULL
+        company TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users(user_id)
     )
     """)
 
@@ -52,7 +64,7 @@ def init_db():
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         tags TEXT NOT NULL,
         user_id TEXT NOT NULL,
-        FOREIGN KEY (user_id) REFERENCES user_resume(user_id)
+        FOREIGN KEY (user_id) REFERENCES users(user_id)
     )
     """)
 

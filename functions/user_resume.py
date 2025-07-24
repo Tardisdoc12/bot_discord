@@ -41,7 +41,7 @@ async def download_pdf(interaction: discord.Interaction, file: discord.Attachmen
             if verify_user_already_exist(interaction.user.id):
                 update_user_cv_path(interaction.user.id, chemin_complet)
             else:
-                create_user_cv_path(interaction.user.id, chemin_complet, interaction.user.name)
+                create_user_cv_path(interaction.user.id, chemin_complet)
             
             await saving_pdf(chemin_complet, file, interaction)
             
@@ -60,9 +60,9 @@ async def download_pdf(interaction: discord.Interaction, file: discord.Attachmen
 
 async def give_resume(interaction: discord.Interaction, user_name : str = None):
     if user_name:
-        chemin = get_user_cv_path_from_name(user_name)[0]
+        chemin = get_user_cv_path_from_name(user_name)
         if chemin:
-            await interaction.response.send_message(file=discord.File(chemin))
+            await interaction.response.send_message(file=discord.File(chemin[0]))
         else:
             await interaction.response.send_message("Aucun fichier PDF attaché.")
     else:
