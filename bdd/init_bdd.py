@@ -67,6 +67,20 @@ def init_db():
         FOREIGN KEY (user_id) REFERENCES users(user_id)
     )
     """)
+    conn.commit()
+
+    ################################################################################
+
+    cursor.execute(
+        """
+        CREATE TABLE IF NOT EXISTS urls (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            url TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(user_id)
+        )
+        """
+    )
 
     ################################################################################
 
