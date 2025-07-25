@@ -10,7 +10,6 @@ from discord import app_commands
 
 from bot import bot
 from bdd.tags_users_bdd import tags
-from functions.core import TagSelectView
 from functions.tags_jobs import add_tag_to_job, delete_all_tags_from_job, get_jobs_from_tag
 from functions.temp_stockage import temp_data
 from functions.jobs import (
@@ -24,34 +23,13 @@ from bdd.tags_jobs import all_tags_job
 from functions.jobs_card import create_job_card
 from functions.users import get_user_name
 from functions.paginations_embed import EmbedPaginator
+from functions.view_creation_base import ViewCreationBase
 
 ################################################################################
 
-class JobOfferView(discord.ui.View):
+class JobOfferView(ViewCreationBase):
     def __init__(self, user_id):
-        super().__init__(timeout=300)
-        self.user_id = user_id
-
-    @discord.ui.button(label="Ajouter un type", style=discord.ButtonStyle.primary)
-    async def add_tag(self, interaction: discord.Interaction, button: discord.ui.Button):
-        if interaction.user.id != self.user_id:
-            await interaction.response.send_message("Ce menu ne t’appartient pas.", ephemeral=True)
-            return
-        await interaction.response.send_message("Sélectionne un tag :", view=TagSelectView(interaction.user.id, tags[:18],"Selection un type de travail:"), ephemeral=True)
-
-    @discord.ui.button(label="Ajouter un language", style=discord.ButtonStyle.primary)
-    async def add_languages(self, interaction: discord.Interaction, button: discord.ui.Button):
-        if interaction.user.id != self.user_id:
-            await interaction.response.send_message("Ce menu ne t’appartient pas.", ephemeral=True)
-            return
-        await interaction.response.send_message("Sélectionne un tag :", view=TagSelectView(interaction.user.id, tags[18:32],"Selection un language:"), ephemeral=True)
-
-    @discord.ui.button(label="Ajouter un framework", style=discord.ButtonStyle.primary)
-    async def add_frameworks(self, interaction: discord.Interaction, button: discord.ui.Button):
-        if interaction.user.id != self.user_id:
-            await interaction.response.send_message("Ce menu ne t’appartient pas.", ephemeral=True)
-            return
-        await interaction.response.send_message("Sélectionne un tag :", view=TagSelectView(interaction.user.id, tags[32:],"Selection un framework:"), ephemeral=True)
+        super().__init__(user_id=user_id)
 
     @discord.ui.button(label="Publier l’offre", style=discord.ButtonStyle.success)
     async def publish(self, interaction: discord.Interaction, button: discord.ui.Button):

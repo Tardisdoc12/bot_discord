@@ -59,5 +59,22 @@ class TagSelectView(discord.ui.View):
             await interaction.response.send_message(f"✅ Tag sélectionné : **{tag_value}**", ephemeral=True)
 
 ################################################################################
+
+class UrlModal(discord.ui.Modal, title="Ajouter une URL"):
+    url = discord.ui.TextInput(label="URL", placeholder="ex: https://mon-site.com", required=True)
+
+    def __init__(self, user_id):
+        super().__init__()
+        self.user_id = user_id
+
+    async def on_submit(self, interaction: discord.Interaction):
+        url_value = self.url.value.strip()
+        user_data = temp_data.get(self.user_id, {})
+        user_data.setdefault("urls", []).append(url_value)
+        temp_data[self.user_id] = user_data
+
+        await interaction.response.send_message(f"✅ URL ajoutée : **{url_value}**", ephemeral=True)
+
+################################################################################
 # End of File
 ################################################################################

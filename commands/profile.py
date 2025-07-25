@@ -9,9 +9,47 @@ import discord
 from discord import app_commands
 
 from bot import bot, id_channel_command
-from functions.core import check_channel_id
+from functions.core import check_channel_id,UrlModal
 from functions.users import register_member
-from functions.profil_user import create_profile
+from functions.profil_user import create_profile, get_profil_photo_user_name, get_profil
+from functions.temp_stockage import temp_data
+from functions.view_creation_base import ViewCreationBase
+
+################################################################################
+
+class UserProfileView(ViewCreationBase):
+    def __init__(self, user_id):
+        super().__init__(user_id=user_id)
+        self.user_id = user_id
+
+    @discord.ui.button(label="Ajouter un url", style=discord.ButtonStyle.primary)
+    async def add_url(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id != self.user_id:
+            await interaction.response.send_message("Ce menu ne t’appartient pas.", ephemeral=True)
+            return
+        await interaction.response.send_modal(UrlModal(user_id=self.user_id))
+
+    @discord.ui.button(label="Créer le profile", style=discord.ButtonStyle.success)
+    async def create_profile(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id != self.user_id:
+            await interaction.response.send_message("Ce menu ne t’appartient pas.", ephemeral=True)
+            return
+
+        data = temp_data.pop(self.user_id, None)
+        if not data:
+            await interaction.response.send_message("Aucune donnée trouvée.", ephemeral=True)
+            return
+        
+
+        photo = await get_profil_photo_user_name(interaction.user.name, interaction)
+        profil_embed = get_profil(
+            interaction.user.name,
+            data["tags"],
+            data["urls"],
+            photo
+        )
+
+        await interaction.response.send_message("Profil créer :",embed=profil_embed)
 
 ################################################################################
 
@@ -42,6 +80,15 @@ async def nom_autocomplete(interaction: discord.Interaction, current: str):
     users_name = [app_commands.Choice(name=member_name, value=member_name) for member_name in filtered]
     
     return users_name
+
+################################################################################
+
+@bot.tree.command(name="create_profile", description="Créer le profile de l'utilisateur")
+async def create_profile(interaction: discord.Interaction):
+    register_member(interaction)
+    if not check_channel_id(interaction, id_channel_command):
+        return
+    await interaction.response.send_message("Créer le profile", view=UserProfileView(interaction.user.id))
 
 ################################################################################
 # End of File
