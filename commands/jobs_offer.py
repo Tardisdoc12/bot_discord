@@ -185,7 +185,7 @@ async def nom_autocomplete(interaction: discord.Interaction, current: str):
     filtered = sorted(
         [member.name async for member in all_names if current.lower() in member.display_name.lower()],
         key=lambda x: x.lower().find(current.lower())
-    )
+    )[:25]
 
     users_name = [app_commands.Choice(name=member_name, value=member_name) for member_name in filtered]
     

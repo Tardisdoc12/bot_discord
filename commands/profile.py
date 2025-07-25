@@ -13,7 +13,11 @@ from functions.core import check_channel_id,UrlModal
 from functions.users import register_member
 from functions.profil_user import create_profile, get_profil_photo_user_name, get_profil
 from functions.temp_stockage import temp_data
+from functions.tags_users import get_informations_from_username
 from functions.view_creation_base import ViewCreationBase
+from functions.urls import create_url
+from bdd.tags_users_bdd import add_tag_to_user,get_users_from_tag, tags
+from functions.paginations_embed import EmbedPaginator
 
 ################################################################################
 
@@ -39,13 +43,18 @@ class UserProfileView(ViewCreationBase):
         if not data:
             await interaction.response.send_message("Aucune donnée trouvée.", ephemeral=True)
             return
-        
+
+        for url in data.get("urls", []):
+            create_url(interaction.user.id, url)
+
+        for tag in data.get("tags", []):
+            add_tag_to_user(interaction.user.id, tag)
 
         photo = await get_profil_photo_user_name(interaction.user.name, interaction)
         profil_embed = get_profil(
             interaction.user.name,
-            data["tags"],
-            data["urls"],
+            data.get("tags",[]),
+            data.get("urls",[]),
             photo
         )
 
@@ -84,11 +93,48 @@ async def nom_autocomplete(interaction: discord.Interaction, current: str):
 ################################################################################
 
 @bot.tree.command(name="create_profile", description="Créer le profile de l'utilisateur")
-async def create_profile(interaction: discord.Interaction):
+async def create_profile_user(interaction: discord.Interaction):
     register_member(interaction)
     if not check_channel_id(interaction, id_channel_command):
         return
     await interaction.response.send_message("Créer le profile", view=UserProfileView(interaction.user.id))
+
+################################################################################
+
+async def get_users_name_tag(tag : str, interaction: discord.Interaction) -> list:
+    users = get_users_from_tag(tag)
+    if not users:
+        await interaction.response.send_message("Aucun utilisateur n'a ce tag.")
+    else:
+        users_embed = []
+        for user_name in users:
+            _, tags, urls = get_informations_from_username(user_name)
+            photo = await get_profil_photo_user_name(user_name, interaction)
+            embed_profil = get_profil(user_name, tags, urls, photo)
+            users_embed.append(embed_profil)
+        embeds_paginator = EmbedPaginator(interaction.user.id, users_embed)
+        await interaction.response.send_message(embed=users_embed[0], view=embeds_paginator)
+
+################################################################################
+
+@bot.tree.command(name="get_users_from_tag", description="Donne tous les utilisateurs ayant un tag")
+async def get_users_name_from_tag(interaction: discord.Interaction, tag : str):
+    register_member(interaction)
+    if not check_channel_id(interaction, id_channel_command):
+        return
+    await get_users_name_tag(tag, interaction)
+
+################################################################################
+
+@get_users_name_from_tag.autocomplete("tag")
+async def tag_autocomplete(interaction: discord.Interaction, current: str):
+    all_tags = tags
+    filtered = sorted(
+        [tag for tag in all_tags if current.lower() in tag.lower()],
+        key=lambda x: x.lower().find(current.lower())
+    )[:25]
+    tags_user = [app_commands.Choice(name=tag, value=tag) for tag in filtered]
+    return tags_user
 
 ################################################################################
 # End of File

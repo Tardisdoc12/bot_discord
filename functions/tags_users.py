@@ -15,6 +15,14 @@ from bdd.tags_users_bdd import (
     add_tag_to_user,
     delete_tag_user_id,
 )
+from functions.urls import get_urls_from_user
+
+################################################################################
+
+def get_informations_from_username(user_name: str) -> list:
+    tags = get_tags_from_user_id_or_name(user_name)
+    urls = get_urls_from_user(user_name)
+    return [user_name, tags, urls]
 
 ################################################################################
 
@@ -27,28 +35,18 @@ def get_tags_from_user_id_or_name(user_id_or_name : str) -> list:
 ################################################################################
 
 async def get_tags_for_user(interaction: discord.Interaction, user_name : str = None) -> list:
-   tags = get_tags_from_user_id_or_name( user_name if user_name else str(interaction.user.id))
-   if tags:
-    message = ",\n".join(list(tags))
-    await interaction.response.send_message(message)
-   else:
-    await interaction.response.send_message("Aucun tag n'a été ajouté.")
+    tags = get_tags_from_user_id_or_name( user_name if user_name else str(interaction.user.id))
+    if tags:
+        message = ",\n".join(list(tags))
+        await interaction.response.send_message(message)
+    else:
+        await interaction.response.send_message("Aucun tag n'a été ajouté.")
 
 ################################################################################
 
 async def get_tags(interaction: discord.Interaction) -> list:
     tags = get_all_tags()
     await interaction.response.send_message(tags)
-
-################################################################################
-
-async def get_users_name_from_tag(tag : str, interaction: discord.Interaction) -> list:
-    users = get_users_from_tag(tag)
-    if not users:
-        await interaction.response.send_message("Aucun utilisateur n'a ce tag.")
-    else:
-        users = ",\n".join(list(users))
-        await interaction.response.send_message(users)
 
 ################################################################################
 

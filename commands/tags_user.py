@@ -11,7 +11,7 @@ from discord import app_commands
 from bot import bot, id_channel_command
 from functions.core import check_channel_id
 from functions.users import register_member
-from functions.tags_users import add_tags, get_tags_for_user, get_users_name_from_tag, delete_tag
+from functions.tags_users import add_tags, get_tags_for_user, delete_tag
 from bdd.tags_users_bdd import tags
 
 ################################################################################
@@ -47,15 +47,6 @@ async def get_tags_user(interaction: discord.Interaction, user_name : str = None
 
 ################################################################################
 
-@bot.tree.command(name="get_users_from_tag", description="Donne tous les utilisateurs ayant un tag")
-async def get_users_from_tag(interaction: discord.Interaction, tag : str):
-    register_member(interaction)
-    if not check_channel_id(interaction, id_channel_command):
-        return
-    await get_users_name_from_tag(tag, interaction)
-
-################################################################################
-
 @bot.tree.command(name="delete_tag_user", description="Supprime un tag de l'utilisateur")
 async def delete_tag_user(interaction: discord.Interaction, tag : str):
     register_member(interaction)
@@ -66,7 +57,6 @@ async def delete_tag_user(interaction: discord.Interaction, tag : str):
 ################################################################################
 
 @delete_tag_user.autocomplete("tag")
-@get_users_from_tag.autocomplete("tag")
 @add_tag.autocomplete("tag")
 async def name_tags(interaction: discord.Interaction, current_input : str):
     tags_name = []
@@ -98,7 +88,7 @@ async def nom_autocomplete(interaction: discord.Interaction, current: str):
     filtered = sorted(
         [member.name async for member in all_names if current.lower() in member.display_name.lower()],
         key=lambda x: x.lower().find(current.lower())
-    )
+    )[:25]
 
     users_name = [app_commands.Choice(name=member_name, value=member_name) for member_name in filtered]
     
