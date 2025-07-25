@@ -10,6 +10,8 @@ import PyPDF2
 import io
 import discord
 
+from functions.temp_stockage import temp_data
+
 ################################################################################
 
 def check_channel_id(ctx, id_channel_command):
@@ -32,6 +34,29 @@ async def saving_pdf(chemin_complet, attachment, interaction : discord.Interacti
     file_bytes = await attachment.read()
     with open(chemin_complet, "wb") as f:
         f.write(file_bytes)
+
+################################################################################
+
+class TagSelectView(discord.ui.View):
+    def __init__(self, user_id, tags_to_select, placeholder, message_success = f"✅ Tag enregistré avec succée!"):
+        super().__init__(timeout=60)
+        self.user_id = user_id
+
+        options = [discord.SelectOption(label=tag) for tag in tags_to_select]
+        self.select = discord.ui.Select(placeholder=placeholder, options=options, min_values=1, max_values=1)
+        self.select.callback = self.on_select
+        self.message_success = message_success
+        self.add_item(self.select)
+
+    async def on_select(self, interaction: discord.Interaction):
+        tag_value = self.select.values[0]
+        user_data = temp_data.get(self.user_id, {})
+        user_data.setdefault("tags", []).append(tag_value)
+        temp_data[self.user_id] = user_data
+        if self.message_success:
+            await interaction.response.send_message(self.message_success, ephemeral=True)
+        else:
+            await interaction.response.send_message(f"✅ Tag sélectionné : **{tag_value}**", ephemeral=True)
 
 ################################################################################
 # End of File

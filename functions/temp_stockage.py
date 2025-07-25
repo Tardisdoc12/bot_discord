@@ -1,21 +1,11 @@
 ################################################################################
-# filename: routes.py
+# filename: temp_stockage.py
 # Author: Jean Anquetil
 # Email: janquetil@e-vitech.com
-# Date: 23/07,2025
+# Date: 25/07,2025
 ################################################################################
 
-import os
-from bot import bot
-import commands.event
-import commands.profile
-import commands.resume
-import commands.tags_user
-import commands.urls
-import commands.jobs_offer
-
-
-bot.run(os.getenv("TOKEN_BOT"))
+temp_data = {}
 
 ################################################################################
 # End of File

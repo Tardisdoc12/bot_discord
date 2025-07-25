@@ -36,9 +36,8 @@ def all_tags_job(job_id : int):
 def all_jobs_tag(tag : str):
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT title,company,description FROM jobs INNER JOIN tags_jobs ON jobs.id = tags_jobs.job_id WHERE tag = ?", (tag,))
+    cursor.execute("SELECT jobs.id,title,company,description,user_id,url FROM jobs INNER JOIN tags_jobs ON jobs.id = tags_jobs.job_id WHERE tag = ?", (tag,))
     jobs = cursor.fetchall()
-    jobs = [job[0] for job in jobs if job is not None]
     conn.close()
     return jobs
 

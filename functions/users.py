@@ -7,7 +7,11 @@
 
 import discord
 
-from bdd.users import get_user_name_from_user_id, add_user, get_user_id_from_user_name, verify_user_already_exist
+from bdd.users import (
+    get_user_name_from_user_id,
+    add_user,
+    verify_user_already_exist,
+)
 
 ################################################################################
 
@@ -30,6 +34,11 @@ def register_member(interaction: discord.Interaction) -> bool:
         return False
     add_user(interaction.user.id, interaction.user.name)
     return True
+
+################################################################################
+
+def get_user_name(user_id: int) -> str:
+    return get_user_name_from_user_id(user_id)
 
 ################################################################################
 # End of File

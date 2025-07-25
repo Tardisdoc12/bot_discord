@@ -45,6 +45,7 @@ tags = [
     "NoSQL",
     "Git",
     "GitHub",
+    "Mercurial",
     "Docker",
     "Kubernetes",
     "AWS",
@@ -72,7 +73,7 @@ def get_tags_from_user_id(user_id : int) -> list:
 def get_tags_from_user_name(user_name : str) -> list:
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT tag FROM tags_user INNER JOIN users ON tags.user_id = users.user_id WHERE user_name = ?", (user_name,))
+    cursor.execute("SELECT tag FROM tags_user INNER JOIN users ON tags_user.user_id = users.user_id WHERE user_name = ?", (user_name,))
     tags = cursor.fetchall()
     tags = list(set([tag[0] for tag in tags if tag is not None]))
     conn.close()

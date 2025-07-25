@@ -27,7 +27,9 @@ def get_urls_from_user_id(id : int) -> list:
 
 def get_urls_from_user_name(user_name : str) -> list:
     id = get_user_id_from_user_name(user_name)
-    urls = get_urls_from_user_id(id)
+    if id is None:
+        return None
+    urls = get_urls_from_user_id(id[0])
     return urls
 
 ################################################################################

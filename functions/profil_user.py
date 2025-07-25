@@ -48,7 +48,7 @@ async def get_profil_photo_user_name(user_name : str, interaction: discord.Inter
 ################################################################################
 
 async def create_profile(user_name : str, interaction: discord.Interaction) -> str:
-    tags = get_tags_from_user_id_or_name(user_name if user_name is not None else str(interaction.user.id))
+    tags = get_tags_from_user_id_or_name(user_name)
     if user_name is None:
         user = interaction.user
         user_name = get_user_name_from_user_id(user.id)

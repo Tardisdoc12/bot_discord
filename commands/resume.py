@@ -34,11 +34,17 @@ async def resume_give(interaction: discord.Interaction, nom : str = None):
 
 @resume_give.autocomplete("nom")
 async def nom_autocomplete(interaction: discord.Interaction, current: str):
-    noms = []
-    async for member in interaction.guild.fetch_members(limit=None):
-        if current.lower() in member.display_name.lower():
-            noms.append(app_commands.Choice(name=member.display_name, value=str(member.name)))
-    return noms
+
+    all_names = interaction.guild.fetch_members(limit=None)
+
+    filtered = sorted(
+        [member.name async for member in all_names if current.lower() in member.display_name.lower()],
+        key=lambda x: x.lower().find(current.lower())
+    )
+
+    users_name = [app_commands.Choice(name=member_name, value=member_name) for member_name in filtered]
+    
+    return users_name
 
 ################################################################################
 # End of File
