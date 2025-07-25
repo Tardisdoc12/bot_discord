@@ -13,6 +13,16 @@ base_de_donnees_path = "bdds/jobs.db"
 
 ################################################################################
 
+def get_job_from_id(job_id : int):
+    conn = sqlite3.connect(base_de_donnees_path)
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM jobs WHERE id = ?", (job_id,))
+    job = cursor.fetchone()
+    conn.close()
+    return job
+
+################################################################################
+
 def get_jobs_from_title(title : str):
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
