@@ -26,8 +26,8 @@ async def add_tag(interaction: discord.Interaction, tag : str):
     if tag in all_tags:
         await add_tags(interaction, tag)
         names_channel = tag_by_channels.get(tag,[])
-        salons_autorise = ["general","command"] + names_channel
-        role = await get_or_create_role(tag, interaction.guild, discord.Colour.green(),salons=salons_autorise)
+        salons_autorise = ["général","command","Général"] + names_channel
+        role = await get_or_create_role(tag, interaction.guild, discord.Colour.green(), salons=salons_autorise)
         for name_channel in names_channel:
             await get_or_create_channel(interaction.guild, name_channel, role)
         if role not in interaction.user.roles:
