@@ -25,8 +25,7 @@ from roles.role_base import add_role_to_member, get_or_create_channel, get_or_cr
 
 class UserProfileView(ViewCreationBase):
     def __init__(self, user_id):
-        super().__init__(user_id=user_id, timeout=180_000)
-        self.user_id = user_id
+        super().__init__(user_id=user_id, timeout=None)
 
     @discord.ui.button(label="Ajouter un url", style=discord.ButtonStyle.primary)
     async def add_url(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -50,7 +49,8 @@ class UserProfileView(ViewCreationBase):
             create_url(interaction.user.id, url)
         
         member = interaction.guild.get_member(interaction.user.id)
-        for tag in data.get("tags", []):    
+        tags = list(set(data.get("tags", [])))
+        for tag in tags:    
             add_tag_to_user(member.id, tag)
             names_channel = tag_by_channels.get(tag,[])
             salons_autorise = ["général","command","Général"] + names_channel

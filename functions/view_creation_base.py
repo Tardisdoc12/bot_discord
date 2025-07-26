@@ -13,7 +13,8 @@ from bdd.tags import tags_metier, tags_framework, tags_language
 
 class ViewCreationBase(discord.ui.View):
     def __init__(self, user_id, timeout=300):
-        super().__init__(timeout=timeout)
+        print(timeout)
+        super().__init__(timeout = timeout)
         self.user_id = user_id
 
     @discord.ui.button(label="Ajouter un type", style=discord.ButtonStyle.primary)

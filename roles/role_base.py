@@ -6,6 +6,7 @@
 ################################################################################
 
 import discord
+import re
 
 ################################################################################
 
@@ -74,7 +75,12 @@ async def get_or_create_channel(guild : discord.Guild, channel_name : str,role :
         guild.default_role: discord.PermissionOverwrite(view_channel=False),
         role: discord.PermissionOverwrite(view_channel=True)
     }
-    existing_channel = discord.utils.get(guild.channels, name=channel_name)
+
+    name_channel_without_emoji = re.sub(r"\w+","",channel_name)
+    existing_channel = next(
+        (c for c in guild.channels if name_channel_without_emoji in c.name),
+        None
+    )
     if existing_channel:
         return existing_channel
     else:
