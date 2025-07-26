@@ -70,21 +70,16 @@ async def get_or_create_channel(guild : discord.Guild, channel_name : str,role :
         lambda c: c.name.lower().startswith("salons") and c.name.lower().endswith("textuels"),
         guild.categories
     )
-    category_voc = discord.utils.find(
-        lambda c: c.name.lower().startswith("salons") and c.name.lower().endswith("vocaux"),
-        guild.categories
-    )
     overwrites = {
         guild.default_role: discord.PermissionOverwrite(view_channel=False),
         role: discord.PermissionOverwrite(view_channel=True)
     }
-    existing_channel = discord.utils.get(guild.channels, name=channel_name.lower())
+    existing_channel = discord.utils.get(guild.channels, name=channel_name)
     if existing_channel:
         return existing_channel
     else:
         channel_text = await guild.create_text_channel(name=channel_name, overwrites=overwrites, category=category_text)
-        channel_voice = await guild.create_voice_channel(name=channel_name+"-voc", overwrites=overwrites, category=category_voc)
-        return (channel_text, channel_voice)
+        return channel_text
 
 ################################################################################
 # End of File

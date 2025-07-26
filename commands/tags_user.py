@@ -12,7 +12,7 @@ from bot import bot, id_channel_command
 from functions.core import check_channel_id
 from functions.users import register_member
 from functions.tags_users import add_tags, get_tags_for_user, delete_tag
-from bdd.tags_users_bdd import tags
+from bdd.tags import all_tags,tag_by_channels
 from roles.role_base import get_or_create_role, remove_role_from_member, add_role_to_member,get_or_create_channel
 
 ################################################################################
@@ -23,11 +23,13 @@ async def add_tag(interaction: discord.Interaction, tag : str):
     register_member(interaction)
     if not check_channel_id(interaction, id_channel_command):
         return
-    if tag in tags:
+    if tag in all_tags:
         await add_tags(interaction, tag)
-        salons_autorise = [tag.lower(),"general","command",tag.lower()+"-voice"]
+        names_channel = tag_by_channels.get(tag,[])
+        salons_autorise = ["general","command"] + names_channel
         role = await get_or_create_role(tag, interaction.guild, discord.Colour.green(),salons=salons_autorise)
-        await get_or_create_channel(interaction.guild, tag, role)
+        for name_channel in names_channel:
+            await get_or_create_channel(interaction.guild, name_channel, role)
         if role not in interaction.user.roles:
                 await add_role_to_member(interaction.user, role)
     else:
@@ -40,7 +42,7 @@ async def get_tags(interaction: discord.Interaction):
     register_member(interaction)
     if not check_channel_id(interaction, id_channel_command):
         return
-    await interaction.response.send_message(", ".join(tags))
+    await interaction.response.send_message(", ".join(all_tags))
 
 ################################################################################
 
@@ -72,11 +74,11 @@ async def name_tags(interaction: discord.Interaction, current_input : str):
     tags_name = []
 
     # Liste de tous les tags possibles (ex: récupérés depuis ta base de données ou en mémoire)
-    all_tags = tags  # Assure-toi que `tags` est une liste accessible ici
+    tags = all_tags  # Assure-toi que `tags` est une liste accessible ici
 
     # Filtrage intelligent : on garde les tags contenant la saisie (insensible à la casse)
     filtered = sorted(
-        [tag for tag in all_tags if current_input.lower() in tag.lower()],
+        [tag for tag in tags if current_input.lower() in tag.lower()],
         key=lambda x: x.lower().find(current_input.lower())
     )
 

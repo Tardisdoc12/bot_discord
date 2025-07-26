@@ -9,7 +9,7 @@ import discord
 from discord import app_commands
 
 from bot import bot
-from bdd.tags_users_bdd import tags
+from bdd.tags import all_tags, tags_metier, tags_framework, tags_language
 from functions.tags_jobs import add_tag_to_job, delete_all_tags_from_job, get_jobs_from_tag
 from functions.temp_stockage import temp_data
 from functions.jobs import (
@@ -203,11 +203,11 @@ async def name_tags(interaction: discord.Interaction, current_input : str):
     tags_name = []
 
     # Liste de tous les tags possibles (ex: récupérés depuis ta base de données ou en mémoire)
-    all_tags = tags  # Assure-toi que `tags` est une liste accessible ici
+    tags  = all_tags # Assure-toi que `tags` est une liste accessible ici
 
     # Filtrage intelligent : on garde les tags contenant la saisie (insensible à la casse)
     filtered = sorted(
-        [tag for tag in all_tags if current_input.lower() in tag.lower()],
+        [tag for tag in tags if current_input.lower() in tag.lower()],
         key=lambda x: x.lower().find(current_input.lower())
     )
 

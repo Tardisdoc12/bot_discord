@@ -16,7 +16,8 @@ from functions.temp_stockage import temp_data
 from functions.tags_users import get_informations_from_username
 from functions.view_creation_base import ViewCreationBase
 from functions.urls import create_url
-from bdd.tags_users_bdd import add_tag_to_user,get_users_from_tag, tags
+from bdd.tags_users_bdd import add_tag_to_user,get_users_from_tag
+from bdd.tags import all_tags, tag_by_channels
 from functions.paginations_embed import EmbedPaginator
 from roles.role_base import add_role_to_member, get_or_create_channel, get_or_create_role
 
@@ -24,7 +25,7 @@ from roles.role_base import add_role_to_member, get_or_create_channel, get_or_cr
 
 class UserProfileView(ViewCreationBase):
     def __init__(self, user_id):
-        super().__init__(user_id=user_id)
+        super().__init__(user_id=user_id, timeout=180_000)
         self.user_id = user_id
 
     @discord.ui.button(label="Ajouter un url", style=discord.ButtonStyle.primary)
@@ -51,9 +52,9 @@ class UserProfileView(ViewCreationBase):
         member = interaction.guild.get_member(interaction.user.id)
         for tag in data.get("tags", []):    
             add_tag_to_user(member.id, tag)
-            salons_autorise = [tag.lower(),"general","command",tag.lower()+"-voice"]
+            names_channel = tag_by_channels.get(tag,[])
+            salons_autorise = ["général","command","Général"] + names_channel
             role = await get_or_create_role(tag, interaction.guild, discord.Colour.green(),salons=salons_autorise)
-            await get_or_create_channel(interaction.guild, tag, role)
             if role not in member.roles:
                 await add_role_to_member(member, role)
 
@@ -65,7 +66,7 @@ class UserProfileView(ViewCreationBase):
             photo
         )
 
-        await interaction.response.send_message("Profil créer :",embed=profil_embed)
+        await interaction.response.send_message("Profil créer :",embed=profil_embed,ephemeral=True)
 
 ################################################################################
 
@@ -104,7 +105,7 @@ async def create_profile_user(interaction: discord.Interaction):
     register_member(interaction)
     if not check_channel_id(interaction, id_channel_command):
         return
-    await interaction.response.send_message("Créer le profile", view=UserProfileView(interaction.user.id))
+    await interaction.response.send_message("Créer le profile", view=UserProfileView(interaction.user.id), ephemeral=True)
 
 ################################################################################
 
@@ -135,9 +136,9 @@ async def get_users_name_from_tag(interaction: discord.Interaction, tag : str):
 
 @get_users_name_from_tag.autocomplete("tag")
 async def tag_autocomplete(interaction: discord.Interaction, current: str):
-    all_tags = tags
+    tags = all_tags
     filtered = sorted(
-        [tag for tag in all_tags if current.lower() in tag.lower()],
+        [tag for tag in tags if current.lower() in tag.lower()],
         key=lambda x: x.lower().find(current.lower())
     )[:25]
     tags_user = [app_commands.Choice(name=tag, value=tag) for tag in filtered]

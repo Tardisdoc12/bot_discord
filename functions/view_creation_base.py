@@ -7,13 +7,13 @@
 
 import discord
 from functions.core import TagSelectView
-from bdd.tags_users_bdd import tags
+from bdd.tags import tags_metier, tags_framework, tags_language
 
 ################################################################################
 
 class ViewCreationBase(discord.ui.View):
-    def __init__(self, user_id):
-        super().__init__(timeout=3000)
+    def __init__(self, user_id, timeout=300):
+        super().__init__(timeout=timeout)
         self.user_id = user_id
 
     @discord.ui.button(label="Ajouter un type", style=discord.ButtonStyle.primary)
@@ -21,21 +21,21 @@ class ViewCreationBase(discord.ui.View):
         if interaction.user.id != self.user_id:
             await interaction.response.send_message("Ce menu ne t’appartient pas.", ephemeral=True)
             return
-        await interaction.response.send_message("Sélectionne un tag :", view=TagSelectView(interaction.user.id, tags[:18],"Selection un type de travail:"), ephemeral=True)
+        await interaction.response.send_message("Sélectionne un tag :", view=TagSelectView(interaction.user.id, tags_metier,"Selection un type de travail:"), ephemeral=True)
 
     @discord.ui.button(label="Ajouter un language", style=discord.ButtonStyle.primary)
     async def add_languages(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id != self.user_id:
             await interaction.response.send_message("Ce menu ne t’appartient pas.", ephemeral=True)
             return
-        await interaction.response.send_message("Sélectionne un tag :", view=TagSelectView(interaction.user.id, tags[18:32],"Selection un language:"), ephemeral=True)
+        await interaction.response.send_message("Sélectionne un tag :", view=TagSelectView(interaction.user.id, tags_language,"Selection un language:"), ephemeral=True)
 
     @discord.ui.button(label="Ajouter un framework", style=discord.ButtonStyle.primary)
     async def add_frameworks(self, interaction: discord.Interaction, button: discord.ui.Button):
         if interaction.user.id != self.user_id:
             await interaction.response.send_message("Ce menu ne t’appartient pas.", ephemeral=True)
             return
-        await interaction.response.send_message("Sélectionne un tag :", view=TagSelectView(interaction.user.id, tags[32:],"Selection un framework:"), ephemeral=True)
+        await interaction.response.send_message("Sélectionne un tag :", view=TagSelectView(interaction.user.id, tags_framework,"Selection un framework:"), ephemeral=True)
 
 ################################################################################
 # End of File
