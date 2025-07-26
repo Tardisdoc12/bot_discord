@@ -24,6 +24,7 @@ from functions.jobs_card import create_job_card
 from functions.users import get_user_name
 from functions.paginations_embed import EmbedPaginator
 from functions.view_creation_base import ViewCreationBase
+from functions.users import register_member
 
 ################################################################################
 
@@ -46,7 +47,7 @@ class JobOfferView(ViewCreationBase):
         if job_id is not None:
             await interaction.response.send_message("Une offre avec ces informations existe deja. elle a l'id {job_id}", ephemeral=True)
             return
-        create_job(data["title"], data["company"], data["description"], data["url"], interaction.user.id)
+        create_job(data["title"], data["company"], data["description"], data["url"], interaction.user.id, data["salaire"], data["horaires"])
         job_id = get_job_id(data["title"], data["description"], data["company"], data["url"], interaction.user.id)[0]
 
         for tag in data.get("tags", []):
@@ -61,6 +62,8 @@ class JobOfferView(ViewCreationBase):
             tags_job,
             data["url"],
             data["company"],
+            data["salaire"],
+            data["horaires"],
             user_name
         )
         await interaction.channel.send( "📝 Offre publiée", embed=embed_job)
@@ -69,12 +72,15 @@ class JobOfferView(ViewCreationBase):
 
 @bot.tree.command(name="create_job_offer", description="Créer une offre avec tags interactifs")
 @app_commands.describe(title="Titre", description="Description", url="Lien", company="Entreprise")
-async def create_job_offer(interaction: discord.Interaction, title: str, description: str, url: str, company: str):
+async def create_job_offer(interaction: discord.Interaction, title: str, description: str, url: str, company: str, salaire: str = None, horaires: str = None):
+    register_member(interaction)
     temp_data[interaction.user.id] = {
         "title": title,
         "description": description,
         "url": url,
         "company": company,
+        "salaire": salaire,
+        "horaires": horaires,
         "tags": []
     }
 
@@ -90,11 +96,13 @@ async def create_job_offer(interaction: discord.Interaction, title: str, descrip
 
 @bot.tree.command(name="get_job", description="Rechercher une offre")
 async def get_job_from_id(interaction: discord.Interaction, job_id : int):
+    register_member(interaction)
     job = get_job_informations(job_id)
     if job is None:
         await interaction.response.send_message("Aucune offre trouvée.", ephemeral=True)
         return
-    job_id, title, company, description, url, user_id = job
+    print(job)
+    job_id, title, company, description, url, salaire, horaires, user_id = job
     tags_job = all_tags_job(job_id)
     if tags_job == []:
         tags_job = "Aucun"
@@ -103,7 +111,7 @@ async def get_job_from_id(interaction: discord.Interaction, job_id : int):
 
     user_name = get_user_name(user_id)[0]
 
-    embed_job = create_job_card(title, job_id, description, tags_job, url, company, user_name)
+    embed_job = create_job_card(title, job_id, description, tags_job, url, company, salaire, horaires, user_name)
 
     await interaction.response.send_message(
         embed=embed_job
@@ -131,7 +139,7 @@ async def get_jobs_tag(interaction: discord.Interaction, tag : str):
         return
     embeds_pages = []
     for job in jobs:
-        job_id, title, company, description, user_id, url = job
+        job_id, title, company, description, user_id, url, salaire, horaires = job
         tags_job = all_tags_job(job_id)
         if tags_job == []:
             tags_job = "Aucun"
@@ -140,7 +148,7 @@ async def get_jobs_tag(interaction: discord.Interaction, tag : str):
 
         user_name = get_user_name(user_id)[0]
 
-        embed_job = create_job_card(title, job_id, description, tags_job, url, company, user_name)
+        embed_job = create_job_card(title, job_id, description, tags_job, url, company, salaire, horaires, user_name)
         embeds_pages.append(embed_job)
     embeds_paginator = EmbedPaginator(interaction.user.id, embeds_pages)
     
@@ -159,17 +167,14 @@ async def get_jobs_from_user(interaction: discord.Interaction, user_name : str =
     embeds_pages = []
     
     for job in jobs:
-        if(len(job) == 6):
-            job_id, title, company, description, user_id, url = job
-        else:
-            job_id, title, company, description, url = job
+        job_id, title, company, description, url, salaire, horaires = job
         tags_job = all_tags_job(job_id)
         if tags_job == []:
             tags_job = "Aucun"
         else:
             tags_job = ",\n".join(tags_job)
 
-        embed_job = create_job_card(title, job_id, description, tags_job, url, company, user)
+        embed_job = create_job_card(title, job_id, description, tags_job, url, company, salaire, horaires, user)
         embeds_pages.append(embed_job)
     embeds_paginator = EmbedPaginator(interaction.user.id, embeds_pages)
     

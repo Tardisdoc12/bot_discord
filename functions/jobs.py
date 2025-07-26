@@ -52,8 +52,8 @@ def get_job_company(company : str) -> list:
 
 ################################################################################
 
-def create_job(title : str, company : str, description : str, link : str, user_id : int) -> None:
-    create_jobs(title, company, description, link, user_id)
+def create_job(title : str, company : str, description : str, link : str, user_id : int, salaire : str, horaires : str) -> None:
+    create_jobs(title, company, description, link, user_id, salaire, horaires)
 
 ################################################################################
 

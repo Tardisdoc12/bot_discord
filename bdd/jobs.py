@@ -53,10 +53,10 @@ def get_jobs_from_company(company : str):
 
 ################################################################################
 
-def create_jobs(title : str, company : str, description : str, link : str, user_id : int) -> None:
+def create_jobs(title : str, company : str, description : str, link : str, user_id : int, salaire : str, horaires : str) -> None:
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("INSERT INTO jobs (title, company, description, url, user_id) VALUES (?, ?, ?, ?, ?)", (title, company, description, link, user_id))
+    cursor.execute("INSERT INTO jobs (title, company, description, url, user_id, salaire, horaires) VALUES (?, ?, ?, ?, ?, ?, ?)", (title, company, description, link, user_id,salaire,horaires))
     conn.commit()
     conn.close()
 
@@ -75,7 +75,7 @@ def get_all_jobs_from_user_id(user_id : int) -> list:
 def get_all_jobs_from_user_name(user_name : str) -> list:
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT jobs.id, title, company, description, url FROM jobs INNER JOIN users ON jobs.user_id = users.user_id WHERE user_name = ?", (user_name,))
+    cursor.execute("SELECT jobs.id, title, company, description, url, salaire, horaires FROM jobs INNER JOIN users ON jobs.user_id = users.user_id WHERE user_name = ?", (user_name,))
     jobs = cursor.fetchall()
     conn.close()
     return jobs

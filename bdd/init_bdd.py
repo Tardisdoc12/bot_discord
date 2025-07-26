@@ -10,6 +10,7 @@ import os
 import sqlite3
 
 ################################################################################
+
 def init_db():
     base_de_donnees_path = "bdds"
     if not os.path.exists(base_de_donnees_path):
@@ -88,6 +89,8 @@ def init_db():
             company TEXT NOT NULL,
             description TEXT NOT NULL,
             url TEXT NOT NULL,
+            salaire TEXT NOT NULL,
+            horaires TEXT NOT NULL,
             user_id TEXT NOT NULL,
             FOREIGN KEY (user_id) REFERENCES users(user_id)
         )
@@ -99,7 +102,6 @@ def init_db():
     conn.commit()
     conn.close()
     print("✅ Base de données initialisée.")
-
 
 ################################################################################
 # End of File
