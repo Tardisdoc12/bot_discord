@@ -12,7 +12,7 @@ from bot import bot, id_channel_command
 from functions.core import check_channel_id
 from functions.users import register_member
 from functions.tags_users import add_tags, get_tags_for_user, delete_tag
-from bdd.tags import all_tags,tag_by_channels
+from bdd.tags import all_tags,tag_by_channels, channels_for_everyone
 from roles.role_base import get_or_create_role, remove_role_from_member, add_role_to_member,get_or_create_channel
 
 ################################################################################
@@ -26,7 +26,7 @@ async def add_tag(interaction: discord.Interaction, tag : str):
     if tag in all_tags:
         await add_tags(interaction, tag)
         names_channel = tag_by_channels.get(tag,[])
-        salons_autorise = ["général","command","Général"] + names_channel
+        salons_autorise = channels_for_everyone + names_channel
         role = await get_or_create_role(tag, interaction.guild, discord.Colour.green(), salons=salons_autorise)
         for name_channel in names_channel:
             await get_or_create_channel(interaction.guild, name_channel, role)

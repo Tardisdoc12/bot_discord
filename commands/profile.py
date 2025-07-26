@@ -17,7 +17,7 @@ from functions.tags_users import get_informations_from_username
 from functions.view_creation_base import ViewCreationBase
 from functions.urls import create_url
 from bdd.tags_users_bdd import add_tag_to_user,get_users_from_tag
-from bdd.tags import all_tags, tag_by_channels
+from bdd.tags import all_tags, tag_by_channels, channels_for_everyone
 from functions.paginations_embed import EmbedPaginator
 from roles.role_base import add_role_to_member, get_or_create_channel, get_or_create_role
 
@@ -53,7 +53,7 @@ class UserProfileView(ViewCreationBase):
         for tag in tags:    
             add_tag_to_user(member.id, tag)
             names_channel = tag_by_channels.get(tag,[])
-            salons_autorise = ["général","command","Général"] + names_channel
+            salons_autorise = channels_for_everyone + names_channel
             role = await get_or_create_role(tag, interaction.guild, discord.Colour.green(),salons=salons_autorise)
             if role not in member.roles:
                 await add_role_to_member(member, role)
