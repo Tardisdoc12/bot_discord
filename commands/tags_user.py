@@ -13,6 +13,7 @@ from functions.core import check_channel_id
 from functions.users import register_member
 from functions.tags_users import add_tags, get_tags_for_user, delete_tag
 from bdd.tags_users_bdd import tags
+from roles.role_base import get_or_create_role, remove_role_from_member, add_role_to_member,get_or_create_channel
 
 ################################################################################
 #TAGS COMMANDS:
@@ -24,6 +25,11 @@ async def add_tag(interaction: discord.Interaction, tag : str):
         return
     if tag in tags:
         await add_tags(interaction, tag)
+        salons_autorise = [tag.lower(),"general","command",tag.lower()+"-voice"]
+        role = await get_or_create_role(tag, interaction.guild, discord.Colour.green(),salons=salons_autorise)
+        await get_or_create_channel(interaction.guild, tag, role)
+        if role not in interaction.user.roles:
+                await add_role_to_member(interaction.user, role)
     else:
         await interaction.response.send_message("Ce tag n'existe pas.")
 
@@ -52,7 +58,11 @@ async def delete_tag_user(interaction: discord.Interaction, tag : str):
     register_member(interaction)
     if not check_channel_id(interaction, id_channel_command):
         return
+    role = await get_or_create_role(tag, interaction.guild, discord.Colour.green(),salons=[])
+    if role in interaction.user.roles:
+        await remove_role_from_member(interaction.user, role)
     await delete_tag(interaction, tag)
+
 
 ################################################################################
 

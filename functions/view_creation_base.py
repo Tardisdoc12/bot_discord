@@ -13,7 +13,7 @@ from bdd.tags_users_bdd import tags
 
 class ViewCreationBase(discord.ui.View):
     def __init__(self, user_id):
-        super().__init__(timeout=300)
+        super().__init__(timeout=3000)
         self.user_id = user_id
 
     @discord.ui.button(label="Ajouter un type", style=discord.ButtonStyle.primary)

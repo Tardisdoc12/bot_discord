@@ -18,6 +18,7 @@ from functions.view_creation_base import ViewCreationBase
 from functions.urls import create_url
 from bdd.tags_users_bdd import add_tag_to_user,get_users_from_tag, tags
 from functions.paginations_embed import EmbedPaginator
+from roles.role_base import add_role_to_member, get_or_create_channel, get_or_create_role
 
 ################################################################################
 
@@ -46,11 +47,17 @@ class UserProfileView(ViewCreationBase):
 
         for url in data.get("urls", []):
             create_url(interaction.user.id, url)
+        
+        member = interaction.guild.get_member(interaction.user.id)
+        for tag in data.get("tags", []):    
+            add_tag_to_user(member.id, tag)
+            salons_autorise = [tag.lower(),"general","command",tag.lower()+"-voice"]
+            role = await get_or_create_role(tag, interaction.guild, discord.Colour.green(),salons=salons_autorise)
+            await get_or_create_channel(interaction.guild, tag, role)
+            if role not in member.roles:
+                await add_role_to_member(member, role)
 
-        for tag in data.get("tags", []):
-            add_tag_to_user(interaction.user.id, tag)
-
-        photo = await get_profil_photo_user_name(interaction.user.name, interaction)
+        photo = await get_profil_photo_user_name(member.name, interaction)
         profil_embed = get_profil(
             interaction.user.name,
             data.get("tags",[]),
