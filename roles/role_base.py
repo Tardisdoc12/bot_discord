@@ -8,6 +8,8 @@
 import discord
 import re
 
+from bdd.tags import category_recrutement
+
 ################################################################################
 
 async def create_role_base(name_role, guild, couleur, salons = []):
@@ -66,9 +68,18 @@ def remove_role_from_member(member, role):
     return member.remove_roles(role)
 ################################################################################
 
+def remove_emoji(string):
+    return re.sub(r"[^\w+]","",string)
+
+################################################################################
+
+def callback(channel : discord.TextChannel)-> bool:
+    return remove_emoji(channel.name).lower().strip().endswith("recrutement")
+
 async def get_or_create_channel(guild : discord.Guild, channel_name : str,role : discord.Role) -> discord.TextChannel:
-    category_text  = discord.utils.find(
-        lambda c: c.name.lower().startswith("salons") and c.name.lower().endswith("textuels"),
+
+    category = discord.utils.find(
+        callback,
         guild.categories
     )
     overwrites = {
@@ -76,7 +87,7 @@ async def get_or_create_channel(guild : discord.Guild, channel_name : str,role :
         role: discord.PermissionOverwrite(view_channel=True)
     }
 
-    name_channel_without_emoji = re.sub(r"\w+","",channel_name)
+    name_channel_without_emoji = remove_emoji(channel_name.lower())
     existing_channel = next(
         (c for c in guild.channels if name_channel_without_emoji in c.name),
         None
@@ -84,7 +95,7 @@ async def get_or_create_channel(guild : discord.Guild, channel_name : str,role :
     if existing_channel:
         return existing_channel
     else:
-        channel_text = await guild.create_text_channel(name=channel_name, overwrites=overwrites, category=category_text)
+        channel_text = await guild.create_text_channel(name=channel_name, overwrites=overwrites, category=category)
         return channel_text
 
 ################################################################################

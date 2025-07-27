@@ -90,6 +90,8 @@ tag_by_channels = {
     "Full Stack": ["🖥️・dev-back","🎨-dev-front"],
 }
 
+category_recrutement = "📚 Recrutement 📚"
+
 channels_for_everyone = [
     "général",
     "command",
