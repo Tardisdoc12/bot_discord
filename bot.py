@@ -111,15 +111,16 @@ class PersistentViewBot(commands.Bot):
 
         self.add_view(ViewCreationRecruteurCandidat())
         guild = discord.Object(id=int(GUILD_ID))  # pour test dans un serveur spécifique
-        try:
-            with open("bdds/message_id.txt", "r") as f:
-                message_id = int(f.readline().strip())
-                channel = self.get_channel(f.readline().strip())
-                if channel:
-                    message = await channel.fetch_message(message_id)
-                    await message.edit(view=self.view_creation_recruteur_candidat)
-        except Exception as e:
-            print(f"⚠️ Impossible de recharger la vue persistante : {e}")
+        if os.path.exists("bdds/message_id.txt"):
+            try:
+                with open("bdds/message_id.txt", "r") as f:
+                    message_id = int(f.readline().strip())
+                    channel = self.get_channel(f.readline().strip())
+                    if channel:
+                        message = await channel.fetch_message(message_id)
+                        await message.edit(view=self.view_creation_recruteur_candidat)
+            except Exception as e:
+                print(f"⚠️ Impossible de recharger la vue persistante : {e}")
         self.tree.copy_global_to(guild=guild)      # copie les commandes globales vers ce serveur
         await self.tree.sync(guild=guild) 
 
