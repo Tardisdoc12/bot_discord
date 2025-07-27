@@ -76,10 +76,15 @@ tags_framework = [
 
 all_tags = tags_metier + tags_language + tags_framework
 
+tag_kind_people = [
+    "Recruteur",
+    "Candidat"
+]
+
 tag_by_channels = {
-    "AI" : ["🤖-AI"],
-    "Machine Learning" : ["🤖-AI"],
-    "Deep Learning": ["🤖-AI"],
+    "AI" : ["🤖-ai"],
+    "Machine Learning" : ["🤖-ai"],
+    "Deep Learning": ["🤖-ai"],
     "Frontend" : ["🎨-dev-front"],
     "Backend": ["🖥️・dev-back"],
     "AdminSys": ["🛡️-adminsys"],
@@ -88,14 +93,20 @@ tag_by_channels = {
     "Design": ["🌈・design"],
     "DevOps": ["💻・devops"],
     "Full Stack": ["🖥️・dev-back","🎨-dev-front"],
+    "Recruteur" : ["・command-recruteur"]
 }
 
 category_recrutement = "📚 Recrutement 📚"
 
 channels_for_everyone = [
-    "général",
-    "command",
-    "Général",
+    "💡・choisissez-vos-salons"
+    "🌱-système",
+    "📖・réglements",
+    "🎓・présentation-des-membres",
+    "📣・annonces",
+    "📝-tutoriels",
+    "📦・dépôts-git",
+    "🎨-portfolios",
 ]
 
 ################################################################################

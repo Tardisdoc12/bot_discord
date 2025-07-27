@@ -76,5 +76,12 @@ class UrlModal(discord.ui.Modal, title="Ajouter une URL"):
         await interaction.response.send_message(f"✅ URL ajoutée : **{url_value}**", ephemeral=True)
 
 ################################################################################
+
+def has_role(role_name: str):
+    async def predicate(interaction: discord.Interaction) -> bool:
+        return any(role.name == role_name for role in interaction.user.roles)
+    return discord.app_commands.check(predicate)
+
+################################################################################
 # End of File
 ################################################################################

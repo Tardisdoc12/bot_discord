@@ -23,7 +23,7 @@ async def create_role_base(name_role, guild, couleur, salons = []):
         )
         for channel in guild.channels:
             overwrite = channel.overwrites_for(role)
-            if channel.name.lower() in salons:
+            if channel.name in salons:
                 overwrite.view_channel = True
                 if isinstance(channel, discord.TextChannel):
                     overwrite.send_messages = True
@@ -87,9 +87,9 @@ async def get_or_create_channel(guild : discord.Guild, channel_name : str,role :
         role: discord.PermissionOverwrite(view_channel=True)
     }
 
-    name_channel_without_emoji = remove_emoji(channel_name.lower())
+    name_channel_without_emoji = remove_emoji(channel_name).lower().strip()
     existing_channel = next(
-        (c for c in guild.channels if name_channel_without_emoji in c.name),
+        (c for c in guild.channels if name_channel_without_emoji in remove_emoji(c.name).strip().lower()),
         None
     )
     if existing_channel:

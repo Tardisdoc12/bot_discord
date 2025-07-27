@@ -9,7 +9,7 @@ import discord
 from discord import app_commands
 
 from bot import bot
-from bdd.tags import all_tags
+from bdd.tags import all_tags, tag_kind_people
 from functions.tags_jobs import add_tag_to_job, delete_all_tags_from_job, get_jobs_from_tag
 from functions.temp_stockage import temp_data
 from functions.jobs import (
@@ -24,6 +24,7 @@ from functions.jobs_card import create_job_card
 from functions.users import get_user_name,miss_profil
 from functions.paginations_embed import EmbedPaginator
 from functions.view_creation_base import ViewCreationBase
+from functions.core import has_role
 
 ################################################################################
 
@@ -69,6 +70,7 @@ class JobOfferView(ViewCreationBase):
 
 ################################################################################
 
+@has_role(tag_kind_people[0])
 @bot.tree.command(name="create_job_offer", description="Créer une offre avec tags interactifs")
 @app_commands.describe(title="Titre", description="Description", url="Lien", company="Entreprise")
 async def create_job_offer(interaction: discord.Interaction, title: str, description: str, url: str, company: str, salaire: str = None, horaires: str = None):
@@ -121,6 +123,7 @@ async def get_job_from_id(interaction: discord.Interaction, job_id : int):
 
 ################################################################################
 
+@has_role(tag_kind_people[0])
 @bot.tree.command(name="delete_job", description="Supprime une offre")
 async def delete_job_with_id(interaction: discord.Interaction, job_id : int):
     user_id = get_user_from_job_id(job_id)
