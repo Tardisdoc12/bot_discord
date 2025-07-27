@@ -114,7 +114,11 @@ async def create_profile_user(interaction: discord.Interaction):
 
 ################################################################################
 
-async def get_users_name_tag(tag : str, interaction: discord.Interaction) -> list:
+@bot.tree.command(name="get_users_from_tag", description="Donne tous les utilisateurs ayant un tag")
+async def get_users_name_tag(interaction: discord.Interaction, tag : str) -> list:
+    if miss_profil(interaction):
+        await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
+        return
     users = get_users_from_tag(tag)
     if not users:
         await interaction.response.send_message("Aucun utilisateur n'a ce tag.")
@@ -126,22 +130,11 @@ async def get_users_name_tag(tag : str, interaction: discord.Interaction) -> lis
             embed_profil = get_profil(user_name, tags, urls, photo)
             users_embed.append(embed_profil)
         embeds_paginator = EmbedPaginator(interaction.user.id, users_embed)
-        await interaction.response.send_message(embed=users_embed[0], view=embeds_paginator)
+        await interaction.response.send_message(embed=users_embed[0], view=embeds_paginator, ephemeral=True)
 
 ################################################################################
 
-@bot.tree.command(name="get_users_from_tag", description="Donne tous les utilisateurs ayant un tag")
-async def get_users_name_from_tag(interaction: discord.Interaction, tag : str):
-    if miss_profil(interaction):
-        await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
-        return
-    if not check_channel_id(interaction, id_channel_command):
-        return
-    await get_users_name_tag(tag, interaction)
-
-################################################################################
-
-@get_users_name_from_tag.autocomplete("tag")
+@get_users_name_tag.autocomplete("tag")
 async def tag_autocomplete(interaction: discord.Interaction, current: str):
     tags = all_tags
     filtered = sorted(

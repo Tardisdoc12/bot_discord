@@ -26,13 +26,15 @@ async def create_all_roles(interaction: discord.Interaction):
         return
     
     await interaction.response.defer(ephemeral=True) 
-    
+    channel_created = []
     for tag in all_tags:
         names_channel = tag_by_channels.get(tag,[])
         salons_autorise = channels_for_everyone + names_channel
         role = await get_or_create_role(tag, interaction.guild, discord.Colour.green(), salons=salons_autorise)
         for name_channel in names_channel:
-            await get_or_create_channel(interaction.guild, name_channel, role)
+            if name_channel not in channel_created:
+                channel_created.append(name_channel)
+                await get_or_create_channel(interaction.guild, name_channel, role)
 
     await interaction.followup.send("✅ Tous les rôles ont été créés.")
 
