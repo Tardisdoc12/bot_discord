@@ -74,6 +74,7 @@ class UserProfileView(ViewCreationBase):
 async def get_profile(interaction: discord.Interaction, user_name : str = None) -> str:
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
+        return
     if not check_channel_id(interaction, id_channel_command):
         return
     user_name = user_name if user_name else interaction.user.name
@@ -133,6 +134,7 @@ async def get_users_name_tag(tag : str, interaction: discord.Interaction) -> lis
 async def get_users_name_from_tag(interaction: discord.Interaction, tag : str):
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
+        return
     if not check_channel_id(interaction, id_channel_command):
         return
     await get_users_name_tag(tag, interaction)

@@ -22,6 +22,7 @@ from roles.role_base import get_or_create_role, remove_role_from_member, add_rol
 async def add_tag(interaction: discord.Interaction, tag : str):
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
+        return
     if not check_channel_id(interaction, id_channel_command):
         return
     if tag in all_tags:
@@ -42,6 +43,7 @@ async def add_tag(interaction: discord.Interaction, tag : str):
 async def get_tags(interaction: discord.Interaction):
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
+        return
     if not check_channel_id(interaction, id_channel_command):
         return
     await interaction.response.send_message(", ".join(all_tags))
@@ -52,6 +54,7 @@ async def get_tags(interaction: discord.Interaction):
 async def get_tags_user(interaction: discord.Interaction, user_name : str = None):
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
+        return
     if not check_channel_id(interaction, id_channel_command):
         return
     await get_tags_for_user(interaction, user_name)
@@ -62,6 +65,7 @@ async def get_tags_user(interaction: discord.Interaction, user_name : str = None
 async def delete_tag_user(interaction: discord.Interaction, tag : str):
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
+        return
     if not check_channel_id(interaction, id_channel_command):
         return
     role = await get_or_create_role(tag, interaction.guild, discord.Colour.green(),salons=[])

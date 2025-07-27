@@ -19,6 +19,7 @@ from functions.users import miss_profil
 async def resume_send(interaction: discord.Interaction, fichier: discord.Attachment):
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
+        return
     if not check_channel_id(interaction, id_channel_command):
         return
     await download_pdf(interaction, fichier)
@@ -27,6 +28,9 @@ async def resume_send(interaction: discord.Interaction, fichier: discord.Attachm
 
 @bot.tree.command(name="give_resume", description="Donne le CV de quelqu'un")
 async def resume_give(interaction: discord.Interaction, nom : str = None):
+    if miss_profil(interaction):
+        await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
+        return
     if not check_channel_id(interaction, id_channel_command):
         return
     await give_resume(interaction, nom)
