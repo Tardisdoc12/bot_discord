@@ -11,20 +11,21 @@ from discord import app_commands
 from bot import bot, id_channel_command
 from functions.user_resume import download_pdf, give_resume
 from functions.core import check_channel_id
-from functions.users import register_member
+from functions.users import miss_profil
 
 ################################################################################
 
-@bot.tree.command(name="resume_send", description="Sauvegarde le CV de l'utilisateur")
+@bot.tree.command(name="send_resume", description="Sauvegarde le CV de l'utilisateur")
 async def resume_send(interaction: discord.Interaction, fichier: discord.Attachment):
-    register_member(interaction)
+    if miss_profil(interaction):
+        await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
     if not check_channel_id(interaction, id_channel_command):
         return
     await download_pdf(interaction, fichier)
 
 ################################################################################
 
-@bot.tree.command(name="resume_give", description="Donne le CV de quelqu'un")
+@bot.tree.command(name="give_resume", description="Donne le CV de quelqu'un")
 async def resume_give(interaction: discord.Interaction, nom : str = None):
     if not check_channel_id(interaction, id_channel_command):
         return

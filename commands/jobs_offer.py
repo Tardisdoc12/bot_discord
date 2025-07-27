@@ -21,7 +21,7 @@ from functions.jobs import (
 )
 from bdd.tags_jobs import all_tags_job
 from functions.jobs_card import create_job_card
-from functions.users import get_user_name
+from functions.users import get_user_name,miss_profil
 from functions.paginations_embed import EmbedPaginator
 from functions.view_creation_base import ViewCreationBase
 from functions.users import register_member
@@ -73,7 +73,8 @@ class JobOfferView(ViewCreationBase):
 @bot.tree.command(name="create_job_offer", description="Créer une offre avec tags interactifs")
 @app_commands.describe(title="Titre", description="Description", url="Lien", company="Entreprise")
 async def create_job_offer(interaction: discord.Interaction, title: str, description: str, url: str, company: str, salaire: str = None, horaires: str = None):
-    register_member(interaction)
+    if miss_profil(interaction):
+        await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
     temp_data[interaction.user.id] = {
         "title": title,
         "description": description,
@@ -96,7 +97,8 @@ async def create_job_offer(interaction: discord.Interaction, title: str, descrip
 
 @bot.tree.command(name="get_job", description="Rechercher une offre")
 async def get_job_from_id(interaction: discord.Interaction, job_id : int):
-    register_member(interaction)
+    if miss_profil(interaction):
+        await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
     job = get_job_informations(job_id)
     if job is None:
         await interaction.response.send_message("Aucune offre trouvée.", ephemeral=True)

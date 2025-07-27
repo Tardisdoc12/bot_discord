@@ -25,7 +25,8 @@ def init_db():
         CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             user_name TEXT NOT NULL,
-            user_id TEXT NOT NULL
+            user_id TEXT NOT NULL,
+            profil_created Integer DEFAULT 0
         )
     """)
     conn.commit()

@@ -15,6 +15,7 @@ from bot import bot, GUILD_ID
 @bot.event
 async def on_ready():
     bot.tree.copy_global_to(guild=discord.Object(id=int(GUILD_ID)))
+    await bot.wait_until_ready()
     await bot.tree.sync(guild=discord.Object(id=int(GUILD_ID)))
     print(f"Bot connecté en tant que {bot.user}")
 

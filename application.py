@@ -13,6 +13,7 @@ import commands.resume
 import commands.tags_user
 import commands.urls
 import commands.jobs_offer
+import commands.admin
 
 
 bot.run(os.getenv("TOKEN_BOT"))

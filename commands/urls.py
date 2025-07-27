@@ -10,14 +10,15 @@ from discord import app_commands
 
 from bot import bot, id_channel_command
 from functions.core import check_channel_id
-from functions.users import register_member
+from functions.users import miss_profil
 from functions.urls import create_url, update_url_from_user, delete_url_from_user, get_urls_from_user
 
 ################################################################################
 
 @bot.tree.command(name="add_urls", description="Ajoute une url au profil")
 async def add_urls(interaction: discord.Interaction, url : str):
-    register_member(interaction)
+    if miss_profil(interaction):
+        await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
     if not check_channel_id(interaction, id_channel_command):
         return
     create_url(interaction.user.id, url)
@@ -27,7 +28,8 @@ async def add_urls(interaction: discord.Interaction, url : str):
 
 @bot.tree.command(name="update_urls", description="Met à jour une url")
 async def update_urls(interaction: discord.Interaction, new_url : str, old_url : str):
-    register_member(interaction)
+    if miss_profil(interaction):
+        await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
     if not check_channel_id(interaction, id_channel_command):
         return
     update_url_from_user(interaction, old_url, new_url)
@@ -37,7 +39,8 @@ async def update_urls(interaction: discord.Interaction, new_url : str, old_url :
 
 @bot.tree.command(name="delete_urls", description="Supprime une url")
 async def delete_urls(interaction: discord.Interaction, url : str):
-    register_member(interaction)
+    if miss_profil(interaction):
+        await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
     if not check_channel_id(interaction, id_channel_command):
         return
     delete_url_from_user(interaction.user.id, url)
@@ -47,7 +50,8 @@ async def delete_urls(interaction: discord.Interaction, url : str):
 
 @bot.tree.command(name="get_urls_user", description="Donne toutes les urls d'un utilisateur")
 async def get_urls_user(interaction: discord.Interaction, user_name : str = None):
-    register_member(interaction)
+    if miss_profil(interaction):
+        await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
     if not check_channel_id(interaction, id_channel_command):
         return
     urls = get_urls_from_user(interaction, user_name if user_name else interaction.user.id)

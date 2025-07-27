@@ -11,7 +11,17 @@ from bdd.users import (
     get_user_name_from_user_id,
     add_user,
     verify_user_already_exist,
+    update_profil_user,
+    get_profil_already_created
 )
+
+################################################################################
+
+def is_creating_profil(interaction: discord.Interaction) -> bool:
+    if get_profil_already_created(interaction.user.id):
+        return False
+    update_profil_user(interaction.user.id)
+    return True
 
 ################################################################################
 
@@ -26,6 +36,14 @@ def register_members(interaction: discord.Interaction) -> list:
     for member in members:
         add_user(member.id, member.name)
     return members
+
+################################################################################
+
+def miss_profil(interaction: discord.Interaction) -> bool:
+    if verify_user_already_exist(interaction.user.id) and get_profil_already_created(interaction.user.id):
+        return False
+    return True
+        
 
 ################################################################################
 

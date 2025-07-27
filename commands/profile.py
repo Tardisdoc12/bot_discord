@@ -10,7 +10,7 @@ from discord import app_commands
 
 from bot import bot, id_channel_command
 from functions.core import check_channel_id,UrlModal
-from functions.users import register_member
+from functions.users import register_member,is_creating_profil,miss_profil
 from functions.profil_user import create_profile, get_profil_photo_user_name, get_profil
 from functions.temp_stockage import temp_data
 from functions.tags_users import get_informations_from_username
@@ -72,7 +72,8 @@ class UserProfileView(ViewCreationBase):
 
 @bot.tree.command(name="get_profile", description="Donne le profil de l'utilisateur")
 async def get_profile(interaction: discord.Interaction, user_name : str = None) -> str:
-    register_member(interaction)
+    if miss_profil(interaction):
+        await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
     if not check_channel_id(interaction, id_channel_command):
         return
     user_name = user_name if user_name else interaction.user.name
@@ -103,6 +104,9 @@ async def nom_autocomplete(interaction: discord.Interaction, current: str):
 @bot.tree.command(name="create_profile", description="Créer le profile de l'utilisateur")
 async def create_profile_user(interaction: discord.Interaction):
     register_member(interaction)
+    if not is_creating_profil(interaction):
+        await interaction.response.send_message("Vous avez deja un profile.",ephemeral=True)
+        return
     if not check_channel_id(interaction, id_channel_command):
         return
     await interaction.response.send_message("Créer le profile", view=UserProfileView(interaction.user.id), ephemeral=True)
@@ -127,7 +131,8 @@ async def get_users_name_tag(tag : str, interaction: discord.Interaction) -> lis
 
 @bot.tree.command(name="get_users_from_tag", description="Donne tous les utilisateurs ayant un tag")
 async def get_users_name_from_tag(interaction: discord.Interaction, tag : str):
-    register_member(interaction)
+    if miss_profil(interaction):
+        await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
     if not check_channel_id(interaction, id_channel_command):
         return
     await get_users_name_tag(tag, interaction)
