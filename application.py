@@ -7,7 +7,6 @@
 
 import os
 from bot import bot
-import commands.event
 import commands.profile
 import commands.resume
 import commands.tags_user

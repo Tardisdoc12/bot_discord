@@ -5,55 +5,60 @@
 # Date: 27/07,2025
 ################################################################################
 
+import os
+
 import discord
 from discord import Permissions,app_commands
 
 from bot import bot
 from roles.role_base import get_or_create_role, get_or_create_channel
 from bdd.tags import all_tags, tag_by_channels, channels_for_everyone, tag_kind_people
+from functions.view_recuteur_candidat import ViewCreationRecruteurCandidat
 
 ################################################################################
 
 admin = app_commands.Group(name="admin", description="Commandes admin")
+bot.tree.add_command(admin)
 
 ################################################################################
 
 message_template = """
-    Bienvenue à tous sur le serveur **{guild_name}** !
+Bienvenue à tous sur le serveur **{guild_name}** !
 
-    Je suis un bot pour les candidats et les recruteurs.
-    Je suis le meilleur bot pour vous mettre en contacte.
-    
-    Vous pouvez cliquer sur un bouton ou les deux selon si vous êtes un recruteur ou un candidat.
-    
-    Les recruteurs peuvent créer des offres d'emplois et sont les seuls ayant ce pouvoir :
-        - Pour créer une offre d'emploi, vous avez la commande: `/create_job_offer`. N'oubliez pas les tags. Ils permettent de mieux accéder aux offres.
-        - Pour supprimer une offre d'emploi, vous avez la commande: `/delete_job`.
-        - Vous pouvez accéder à toutes les offres d'emplois que vous avez publié avec la commande : `get_jobs_from_user` sans aucun argument.
-        - Vous pouvez récupérer un cv d'un utilisateur avec la commande: `/give_resume` + le pseudo de l'utilisateur.
+Je suis un bot pour les candidats et les recruteurs.
+Je suis le meilleur bot pour vous mettre en contacte.
 
-    Les candidats ne peuvent que voir les offres d'emplois et mettre leur cv:
-        - Pour voir les offres d'emplois d'un utilisateur, vous avez la commande: `/get_jobs_from_user` + le nom du publieur.
-        - Pour voir votre cv, vous avez la commande: `/give_resume` sans aucun pseudo.
-        - Pour mettre votre cv, vous avez la commande: `/send_resume`.
-    
-    Pour commencer à voir les channels qui vous interesse que vous soyez recruteur ou candidat, vous avez la commande: `/create_profile`.
-    Cette commande vous permet de choisir les tags correspondants à vos compétences et vos connaissances. Vous pourrez aussi mettre toutes les urls que vous souhaitez.
-    Les tags sont le plus important car ils permettent de mieux vous retrouvez et d'accéder aux channels qui vous interesse. Vous pourrez ainsi avoir les rôles correspondants.
+Vous pouvez cliquer sur un bouton ou les deux selon si vous êtes un recruteur ou un candidat.
 
-    Pour voir les tags, vous avez la commande: `/get_tags`.
-    Pour voir les tags d'un utilisateur, vous avez la commande: `/get_tags_user` + le pseudo de l'utilisateur.
-    Pour voir les profils correspondant à un tag, vous avez la commande: `/get_users_name_tag` + le tag.
-    Si vous avez oublié un tag ou que vous avez mis un tag inutile, pas de panique!
-    Pour ajouter un tag, vous avez la commande: `/add_tag` + le tag.
-    Pour supprimer un tag, vous avez la commande: `/delete_tag` + le tag.
-    
-    Pour les urls vous pouvez aussi utiliser la commande: `/get_urls_user` + le pseudo de l'utilisateur. Et ainsi récupérer les urls de quelqu'un.
-    Pour modifier une url, vous avez la commande: `/update_urls` + la nouvelle url + l'url originale.
-    Pour supprimer une url, vous avez la commande: `/delete_urls` + l'url.
-    Pour ajouter une url, vous avez la commande: `/add_urls` + l'url.
+Les recruteurs peuvent créer des offres d'emplois et sont les seuls ayant ce pouvoir :\n
+\t-Pour créer une offre d'emploi, vous avez la commande: `/create_job_offer`. N'oubliez pas les tags. Ils permettent de mieux accéder aux offres.
+\t-Pour supprimer une offre d'emploi, vous avez la commande: `/delete_job`.
+\t-Vous pouvez accéder à toutes les offres d'emplois que vous avez publié avec la commande : `get_jobs_from_user` sans aucun argument.
+\t-Vous pouvez récupérer un cv d'un utilisateur avec la commande: `/give_resume` + le pseudo de l'utilisateur.
 
-    Bonne visite et bon courage!
+Les candidats ne peuvent que voir les offres d'emplois et mettre leur cv:\n
+\t-Pour voir les offres d'emplois d'un utilisateur, vous avez la commande: `/get_jobs_from_user` + le nom du publieur.
+\t-Pour voir votre cv, vous avez la commande: `/give_resume` sans aucun pseudo.
+\t-Pour mettre votre cv, vous avez la commande: `/send_resume`.
+"""
+tags_message = """    
+Pour commencer à voir les channels qui vous interesse que vous soyez recruteur ou candidat, vous avez la commande: `/create_profile`.
+Cette commande vous permet de choisir les tags correspondants à vos compétences et vos connaissances. Vous pourrez aussi mettre toutes les urls que vous souhaitez.
+Les tags sont le plus important car ils permettent de mieux vous retrouvez et d'accéder aux channels qui vous interesse. Vous pourrez ainsi avoir les rôles correspondants.
+
+Pour voir les tags, vous avez la commande: `/get_tags`.
+Pour voir les tags d'un utilisateur, vous avez la commande: `/get_tags_user` + le pseudo de l'utilisateur.
+Pour voir les profils correspondant à un tag, vous avez la commande: `/get_users_name_tag` + le tag.
+Si vous avez oublié un tag ou que vous avez mis un tag inutile, pas de panique!
+\tPour ajouter un tag, vous avez la commande: `/add_tag` + le tag.
+\tPour supprimer un tag, vous avez la commande: `/delete_tag` + le tag.
+
+Pour les urls vous pouvez aussi utiliser la commande: `/get_urls_user` + le pseudo de l'utilisateur. Et ainsi récupérer les urls de quelqu'un.
+\tPour modifier une url, vous avez la commande: `/update_urls` + la nouvelle url + l'url originale.
+\tPour supprimer une url, vous avez la commande: `/delete_urls` + l'url.
+\tPour ajouter une url, vous avez la commande: `/add_urls` + l'url.
+
+Bonne visite et bon courage!
 """
 
 ################################################################################
@@ -77,6 +82,34 @@ async def create_all_roles(interaction: discord.Interaction):
                 await get_or_create_channel(interaction.guild, name_channel, role)
 
     await interaction.followup.send("✅ Tous les rôles ont été créés.")
+
+################################################################################
+
+@bot.tree.command(name="generate", description="envoie le message de bienvenue (admin)")
+async def send_message_recruteur_candidat(interaction: discord.Interaction, id_channel: str = None):
+    if not interaction.user.guild_permissions.administrator:
+        await interaction.response.send_message("❌ Tu dois être admin.", ephemeral=True)
+        return
+    message = message_template.format(guild_name=interaction.guild.name)
+    
+    # Recuperation du channel
+    target_channel_id = int(id_channel) if id_channel else interaction.channel_id
+    channel = interaction.client.get_channel(target_channel_id)
+    if channel is None:
+        channel = await interaction.client.fetch_channel(target_channel_id)
+    
+    # Envoie du message
+    await interaction.response.defer()
+    await channel.send(message)
+    sent = await channel.send(tags_message, view=ViewCreationRecruteurCandidat())
+    await interaction.followup.send("✅ Message envoyé.",ephemeral=True)
+    # Sauvegarde de l'id du message et du channel
+    with open("bdds/message_id.txt","w") as file:
+        file.write(str(sent.id) + "\n")
+        if id_channel:
+            file.write(str(id_channel) + "\n")
+        else:
+            file.write(str(sent.channel.id) + "\n")
 
 ################################################################################
 
