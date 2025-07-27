@@ -18,7 +18,7 @@ from roles.role_base import get_or_create_role, remove_role_from_member, add_rol
 ################################################################################
 #TAGS COMMANDS:
 
-@bot.tree.command(name="add_tags", description="ajoute un tag au profil")
+@bot.tree.command(name="add_tag", description="ajoute un tag au profil")
 async def add_tag(interaction: discord.Interaction, tag : str):
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
@@ -59,7 +59,7 @@ async def get_tags_user(interaction: discord.Interaction, user_name : str = None
 
 ################################################################################
 
-@bot.tree.command(name="delete_tag_user", description="Supprime un tag de l'utilisateur")
+@bot.tree.command(name="delete_tag", description="Supprime un tag de l'utilisateur")
 async def delete_tag_user(interaction: discord.Interaction, tag : str):
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
