@@ -127,6 +127,9 @@ channels_for_everyone = [
     "📣・les-dix-commandements-du-geek",
     "🚨-veille",
     "📖-profils",
+    "🎮-jeux",
+    "📰-mangas",
+    "🎵-musique"
 ]
 
 ################################################################################
