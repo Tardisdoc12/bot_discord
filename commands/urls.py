@@ -20,7 +20,8 @@ async def add_urls(interaction: discord.Interaction, url : str):
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
         return
-    if not check_channel_id(interaction, id_channel_command):
+    isGoodChannel = await check_channel_id(interaction, id_channel_command)
+    if not isGoodChannel:
         return
     create_url(interaction.user.id, url)
     await interaction.response.send_message(f"URL {url} ajoutée.")
@@ -32,7 +33,8 @@ async def update_urls(interaction: discord.Interaction, new_url : str, old_url :
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
         return
-    if not check_channel_id(interaction, id_channel_command):
+    isGoodChannel = await check_channel_id(interaction, id_channel_command)
+    if not isGoodChannel:
         return
     update_url_from_user(interaction, old_url, new_url)
     await interaction.response.send_message(f"URL {new_url} mis à jour.")
@@ -44,7 +46,8 @@ async def delete_urls(interaction: discord.Interaction, url : str):
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
         return
-    if not check_channel_id(interaction, id_channel_command):
+    isGoodChannel = await check_channel_id(interaction, id_channel_command)
+    if not isGoodChannel:
         return
     delete_url_from_user(interaction.user.id, url)
     await interaction.response.send_message(f"URL {url} supprimée.")
@@ -56,7 +59,8 @@ async def get_urls_user(interaction: discord.Interaction, user_name : str = None
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
         return
-    if not check_channel_id(interaction, id_channel_command):
+    isGoodChannel = await check_channel_id(interaction, id_channel_command)
+    if not isGoodChannel:
         return
     urls = get_urls_from_user(interaction, user_name if user_name else interaction.user.id)
     if urls == []:

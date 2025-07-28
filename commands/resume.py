@@ -20,7 +20,8 @@ async def resume_send(interaction: discord.Interaction, fichier: discord.Attachm
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
         return
-    if not check_channel_id(interaction, id_channel_command):
+    isGoodChannel = await check_channel_id(interaction, id_channel_command)
+    if not isGoodChannel:
         return
     await download_pdf(interaction, fichier)
 
@@ -31,7 +32,8 @@ async def resume_give(interaction: discord.Interaction, nom : str = None):
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
         return
-    if not check_channel_id(interaction, id_channel_command):
+    isGoodChannel = await check_channel_id(interaction, id_channel_command)
+    if not isGoodChannel:
         return
     await give_resume(interaction, nom)
 

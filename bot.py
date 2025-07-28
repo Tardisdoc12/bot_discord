@@ -25,7 +25,7 @@ init_db()
 intents = discord.Intents.default()
 intents.message_content = True  # nécessaire pour lire les messages
 intents.members = True
-id_channel_command = int(os.getenv("ID_CHANNEL_COMMAND"))
+id_channel_command = [int(channel) for channel in os.getenv("ID_CHANNEL_COMMAND").split(',')]
 
 ################################################################################
 

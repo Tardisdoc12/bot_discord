@@ -23,7 +23,8 @@ async def add_tag(interaction: discord.Interaction, tag : str):
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
         return
-    if not check_channel_id(interaction, id_channel_command):
+    isGoodChannel = await check_channel_id(interaction, id_channel_command)
+    if not isGoodChannel:
         return
     if tag in all_tags:
         await add_tags(interaction, tag)
@@ -42,7 +43,8 @@ async def get_tags(interaction: discord.Interaction):
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
         return
-    if not check_channel_id(interaction, id_channel_command):
+    isGoodChannel = await check_channel_id(interaction, id_channel_command)
+    if not isGoodChannel:
         return
     await interaction.response.send_message(", ".join(all_tags))
 
@@ -53,7 +55,8 @@ async def get_tags_user(interaction: discord.Interaction, user_name : str = None
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
         return
-    if not check_channel_id(interaction, id_channel_command):
+    isGoodChannel = await check_channel_id(interaction, id_channel_command)
+    if not isGoodChannel:
         return
     await get_tags_for_user(interaction, user_name)
 
@@ -64,7 +67,8 @@ async def delete_tag_user(interaction: discord.Interaction, tag : str):
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
         return
-    if not check_channel_id(interaction, id_channel_command):
+    isGoodChannel = await check_channel_id(interaction, id_channel_command)
+    if not isGoodChannel:
         return
     role = await get_or_create_role(tag, interaction.guild, discord.Colour.green(),salons=[])
     if role in interaction.user.roles:

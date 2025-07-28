@@ -14,9 +14,12 @@ from functions.temp_stockage import temp_data
 
 ################################################################################
 
-def check_channel_id(ctx, id_channel_command):
-    if ctx.channel.id != id_channel_command:
-        return False
+async def check_channel_id(interaction : discord.Interaction, id_channel_command : int|list[int]):
+    if isinstance(id_channel_command, int):
+        id_channel_command = [id_channel_command]
+    if not interaction.channel.id in id_channel_command:
+            await interaction.response.send_message("Vous devez utiliser cette commande dans les salons autorisés",ephemeral=True)
+            return False
     return True
 
 ################################################################################
