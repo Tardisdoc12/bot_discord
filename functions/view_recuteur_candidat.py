@@ -40,3 +40,6 @@ class ViewCreationRecruteurCandidat(discord.ui.View):
             await interaction.user.add_roles(candidat_role)
             await interaction.response.send_message("Vous avez ajouté le role candidat", ephemeral=True)
 
+################################################################################
+# End of File
+################################################################################

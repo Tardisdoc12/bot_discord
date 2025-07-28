@@ -9,6 +9,7 @@ tags_metier = [
     "AI",
     "Machine Learning",
     "Deep Learning",
+    "VR-AR",
     "Frontend",
     "Backend",
     "AdminSys",
@@ -91,10 +92,24 @@ tag_by_channels = {
     "Cybersecurity": ["🔒・cybersécurité"],
     "Data Science": ["📊・data-science"],
     "Design": ["🌈・design"],
+    "VR-AR": ["🥽-ar-vr"],
     "DevOps": ["💻・devops"],
     "Full Stack": ["🖥️・dev-back","🎨-dev-front"],
-    "Recruteur" : ["・command-recruteur"]
+    "Recruteur" : ["🔎・commande-recruteur"]
 }
+
+tag_role_salon = [
+    "AI",
+    "Frontend",
+    "Backend",
+    "AdminSys",
+    "Cybersecurity",
+    "Data Science",
+    "Full Stack",
+    "Design",
+    "DevOps",
+    "VR-AR",
+]
 
 category_recrutement = "📚 Recrutement 📚"
 
@@ -107,6 +122,11 @@ channels_for_everyone = [
     "📝-tutoriels",
     "📦・dépôts-git",
     "🎨-portfolios",
+    "💬-général",
+    "📖・principe-du-server",
+    "📣・les-dix-commandements-du-geek",
+    "🚨-veille",
+    "📖-profils",
 ]
 
 ################################################################################
