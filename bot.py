@@ -55,6 +55,7 @@ class PersistentViewBot(commands.Bot):
         await self.tree.sync(guild=guild) 
 
     async def on_ready(self):
+        await self.tree.sync(guild=discord.Object(id=int(GUILD_ID)))
         print(f'Logged in as {self.user} (ID: {self.user.id})')
         print('------')
 
