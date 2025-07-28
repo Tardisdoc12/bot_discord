@@ -83,9 +83,9 @@ tag_kind_people = [
 ]
 
 tag_by_channels = {
-    "AI" : ["🤖-ai"],
-    "Machine Learning" : ["🤖-ai"],
-    "Deep Learning": ["🤖-ai"],
+    "AI" : ["🤖ai"],
+    "Machine Learning" : ["🤖ai"],
+    "Deep Learning": ["🤖ai"],
     "Frontend" : ["🎨-dev-front"],
     "Backend": ["🖥️・dev-back"],
     "AdminSys": ["🛡️-adminsys"],

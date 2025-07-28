@@ -21,24 +21,26 @@ class ViewCreationRecruteurCandidat(discord.ui.View):
         recruteur_role_name = tag_kind_people[0]
         channels_available = channels_for_everyone + tag_by_channels[recruteur_role_name]
         recruteur_role = await get_or_create_role(recruteur_role_name, interaction.guild, discord.Colour.green(),salons=channels_available)
+        await interaction.response.defer(ephemeral=True)
         if recruteur_role in interaction.user.roles:
             await interaction.user.remove_roles(recruteur_role)
-            await interaction.response.send_message("Vous avez retiré le role recruteur", ephemeral=True)
+            await interaction.followup.send_message("Vous avez retiré le role recruteur", ephemeral=True)
         else:
             await interaction.user.add_roles(recruteur_role)
-            await interaction.response.send_message("Vous avez ajouté le role recruteur", ephemeral=True)
+            await interaction.followup.send_message("Vous avez ajouté le role recruteur", ephemeral=True)
 
 
     @discord.ui.button(label="Candidat", style=discord.ButtonStyle.primary,custom_id="view:candidat")
     async def candidat(self, interaction: discord.Interaction, button: discord.ui.Button):
         candidat_role_name = tag_kind_people[1]
         candidat_role = await get_or_create_role(candidat_role_name, interaction.guild, discord.Colour.green(),salons=channels_for_everyone)
+        await interaction.response.defer(ephemeral=True)
         if candidat_role in interaction.user.roles:
             await interaction.user.remove_roles(candidat_role)
-            await interaction.response.send_message("Vous avez retiré le role candidat", ephemeral=True)
+            await interaction.followup.send_message("Vous avez retiré le role candidat", ephemeral=True)
         else:
             await interaction.user.add_roles(candidat_role)
-            await interaction.response.send_message("Vous avez ajouté le role candidat", ephemeral=True)
+            await interaction.followup.send_message("Vous avez ajouté le role candidat", ephemeral=True)
 
 ################################################################################
 # End of File
