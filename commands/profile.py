@@ -45,6 +45,8 @@ class UserProfileView(ViewCreationBase):
             await interaction.response.send_message("Aucune donnée trouvée.", ephemeral=True)
             return
 
+        await interaction.response.defer(ephemeral=True)
+
         for url in data.get("urls", []):
             create_url(interaction.user.id, url)
         
@@ -66,7 +68,7 @@ class UserProfileView(ViewCreationBase):
             photo
         )
 
-        await interaction.response.send_message("Profil créer :",embed=profil_embed,ephemeral=True)
+        await interaction.followup.send("Profil créer :",embed=profil_embed)
 
 ################################################################################
 
