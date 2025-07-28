@@ -24,10 +24,10 @@ class ViewCreationRecruteurCandidat(discord.ui.View):
         await interaction.response.defer(ephemeral=True)
         if recruteur_role in interaction.user.roles:
             await interaction.user.remove_roles(recruteur_role)
-            await interaction.followup.send_message("Vous avez retiré le role recruteur", ephemeral=True)
+            await interaction.followup.send("Vous avez retiré le role recruteur", ephemeral=True)
         else:
             await interaction.user.add_roles(recruteur_role)
-            await interaction.followup.send_message("Vous avez ajouté le role recruteur", ephemeral=True)
+            await interaction.followup.send("Vous avez ajouté le role recruteur", ephemeral=True)
 
 
     @discord.ui.button(label="Candidat", style=discord.ButtonStyle.primary,custom_id="view:candidat")
@@ -37,10 +37,10 @@ class ViewCreationRecruteurCandidat(discord.ui.View):
         await interaction.response.defer(ephemeral=True)
         if candidat_role in interaction.user.roles:
             await interaction.user.remove_roles(candidat_role)
-            await interaction.followup.send_message("Vous avez retiré le role candidat", ephemeral=True)
+            await interaction.followup.send("Vous avez retiré le role candidat", ephemeral=True)
         else:
             await interaction.user.add_roles(candidat_role)
-            await interaction.followup.send_message("Vous avez ajouté le role candidat", ephemeral=True)
+            await interaction.followup.send("Vous avez ajouté le role candidat", ephemeral=True)
 
 ################################################################################
 # End of File
