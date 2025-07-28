@@ -40,7 +40,6 @@ class PersistentViewBot(commands.Bot):
     async def setup_hook(self) -> None:
 
         self.add_view(ViewCreationRecruteurCandidat())
-        guild = discord.Object(id=int(GUILD_ID))  # pour test dans un serveur spécifique
         if os.path.exists("bdds/message_id.txt"):
             try:
                 with open("bdds/message_id.txt", "r") as f:
@@ -51,7 +50,6 @@ class PersistentViewBot(commands.Bot):
                         await message.edit(view=self.view_creation_recruteur_candidat)
             except Exception as e:
                 print(f"⚠️ Impossible de recharger la vue persistante : {e}")
-             # copie les commandes globales vers ce serveur
 
     async def on_ready(self):
         await self.tree.sync()
