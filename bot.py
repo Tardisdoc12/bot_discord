@@ -51,11 +51,10 @@ class PersistentViewBot(commands.Bot):
                         await message.edit(view=self.view_creation_recruteur_candidat)
             except Exception as e:
                 print(f"⚠️ Impossible de recharger la vue persistante : {e}")
-        self.tree.copy_global_to(guild=guild)      # copie les commandes globales vers ce serveur
-        await self.tree.sync(guild=guild) 
+             # copie les commandes globales vers ce serveur
 
     async def on_ready(self):
-        await self.tree.sync(guild=discord.Object(id=int(GUILD_ID)))
+        await self.tree.sync()
         print(f'Logged in as {self.user} (ID: {self.user.id})')
         print('------')
 
