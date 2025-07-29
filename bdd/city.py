@@ -6,6 +6,7 @@
 ################################################################################
 
 import sqlite3
+from bdd.users import get_user_id_from_user_name
 
 ################################################################################
 
@@ -19,6 +20,15 @@ def get_cities_from_user_id(user_id : int) -> list:
     cursor.execute("SELECT city FROM cities WHERE user_id = ?", (user_id,))
     cities = cursor.fetchall()
     conn.close()
+    return cities
+
+################################################################################
+
+def get_cities_from_user_name(user_name : str) -> list:
+    id = get_user_id_from_user_name(user_name)
+    if id is None:
+        return None
+    cities = get_cities_from_user_id(id[0])
     return cities
 
 ################################################################################
