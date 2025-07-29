@@ -9,8 +9,16 @@ from bdd.city import (
     add_city,
     delete_city,
     update_city,
-    get_cities_from_user_id
+    get_cities_from_user_id,
 )
+
+################################################################################
+
+def get_city_from_user_id(user_id : int) -> list:
+    cities = get_cities_from_user_id(user_id)
+    if len(cities) == 0:
+        return []
+    return cities[0]
 
 ################################################################################
 

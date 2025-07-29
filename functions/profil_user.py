@@ -12,7 +12,7 @@ from bdd.urls import (
     get_urls_from_user_id
 )
 from functions.tags_users import get_tags_from_user_id_or_name
-from functions.city_user import get_cities_from_user_id
+from functions.city_user import get_city_from_user_id
 from bdd.users import get_user_name_from_user_id
 
 ################################################################################
@@ -67,7 +67,7 @@ async def create_profile(user_name : str, interaction: discord.Interaction) -> s
         urls = [url[0] for url in urls if url is not None]
     else:
         urls = []
-    cities = get_cities_from_user_id(user_id=user.id)
+    cities = get_city_from_user_id(user_id=user.id)
     return get_profil(user_name, tags if tags else [], urls, cities, avatar_url)
 
 ################################################################################
