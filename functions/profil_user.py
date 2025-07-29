@@ -17,7 +17,7 @@ from bdd.users import get_user_name_from_user_id
 
 ################################################################################
 
-def get_profil(user_name : str, tags : list, urls : list,city : list , photo : str) -> str:
+def get_profil(user_name : str, tags : list, urls : list, city : list , photo : str) -> str:
     discord_embed = discord.Embed(
         title=f"📋 Profil de {user_name}",
         color=discord.Color.teal()

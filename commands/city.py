@@ -71,10 +71,10 @@ async def delete_city(interaction: discord.Interaction, city: str) -> None:
     
     is_city_already_in_user = city_user.delete_city_from_user(interaction.user.id, city)
     if not is_city_already_in_user:
-        await interaction.edit_original_response(content=f"Aucune ville trouvée pour votre profil. Veuillez utiliser la commande /add_city.",ephermal=True)
+        await interaction.edit_original_response(content=f"Aucune ville trouvée pour votre profil. Veuillez utiliser la commande /add_city.",ephemeral=True)
         return
     else:
-        await interaction.edit_original_response(content=f"Ville {city} supprimée.",ephermal=True)
+        await interaction.edit_original_response(content=f"Ville {city} supprimée.",ephemeral=True)
         return
 
 ################################################################################
