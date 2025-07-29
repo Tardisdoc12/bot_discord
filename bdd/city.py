@@ -9,14 +9,14 @@ import sqlite3
 
 ################################################################################
 
-base_de_donnees_path = "/mount/bdd/jobs.db"
+base_de_donnees_path = "bdds/jobs.db"
 
 ################################################################################
 
 def get_cities_from_user_id(user_id : int) -> list:
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("SELECT * FROM cities WHERE user_id = ?", (user_id,))
+    cursor.execute("SELECT city FROM cities WHERE user_id = ?", (user_id,))
     cities = cursor.fetchall()
     conn.close()
     return cities
