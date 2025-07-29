@@ -9,7 +9,7 @@ import discord
 from discord import app_commands
 
 from bot import bot, id_channel_command
-from functions.core import check_channel_id,UrlModal
+from functions.core import check_channel_id,UrlModal,CityModal
 from functions.users import register_member,is_creating_profil,miss_profil
 from functions.profil_user import create_profile, get_profil_photo_user_name, get_profil
 from functions.temp_stockage import temp_data
@@ -20,6 +20,7 @@ from bdd.tags_users_bdd import add_tag_to_user,get_users_from_tag
 from bdd.tags import all_tags, tag_by_channels, channels_for_everyone
 from functions.paginations_embed import EmbedPaginator
 from roles.role_base import add_role_to_member, get_or_create_channel, get_or_create_role
+from functions.city_user import add_city_to_user
 
 ################################################################################
 
@@ -33,6 +34,13 @@ class UserProfileView(ViewCreationBase):
             await interaction.response.send_message("Ce menu ne t’appartient pas.", ephemeral=True)
             return
         await interaction.response.send_modal(UrlModal(user_id=self.user_id))
+
+    @discord.ui.button(label="Ajouter une ville", style=discord.ButtonStyle.primary)
+    async def add_city(self, interaction: discord.Interaction, button: discord.ui.Button):
+        if interaction.user.id != self.user_id:
+            await interaction.response.send_message("Ce menu ne t’appartient pas.", ephemeral=True)
+            return
+        await interaction.response.send_modal(CityModal(user_id=self.user_id))
 
     @discord.ui.button(label="Créer le profile", style=discord.ButtonStyle.success)
     async def create_profile(self, interaction: discord.Interaction, button: discord.ui.Button):
@@ -59,12 +67,16 @@ class UserProfileView(ViewCreationBase):
             role = await get_or_create_role(tag, interaction.guild, discord.Colour.green(),salons=salons_autorise)
             if role not in member.roles:
                 await add_role_to_member(member, role)
+        
+        for city in data.get("cities", []):
+            add_city_to_user(member.id, city)
 
         photo = await get_profil_photo_user_name(member.name, interaction)
         profil_embed = get_profil(
             interaction.user.name,
             data.get("tags",[]),
             data.get("urls",[]),
+            data.get("city",[]),
             photo
         )
 

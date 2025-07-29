@@ -12,11 +12,12 @@ from bdd.urls import (
     get_urls_from_user_id
 )
 from functions.tags_users import get_tags_from_user_id_or_name
+from functions.city_user import get_cities_from_user_id
 from bdd.users import get_user_name_from_user_id
 
 ################################################################################
 
-def get_profil(user_name : str, tags : list, urls : list, photo : str) -> str:
+def get_profil(user_name : str, tags : list, urls : list,city : list , photo : str) -> str:
     discord_embed = discord.Embed(
         title=f"📋 Profil de {user_name}",
         color=discord.Color.teal()
@@ -25,6 +26,8 @@ def get_profil(user_name : str, tags : list, urls : list, photo : str) -> str:
         discord_embed.add_field(name="Tags:", value="\n".join(tags), inline=True)
     if urls != []:
         discord_embed.add_field(name="Urls:", value="\n".join(urls), inline=True)
+    if city != []:
+        discord_embed.add_field(name="Ville:", value="\n".join(city), inline=True)
     discord_embed.set_thumbnail(url=photo)
     return discord_embed
 
@@ -64,7 +67,8 @@ async def create_profile(user_name : str, interaction: discord.Interaction) -> s
         urls = [url[0] for url in urls if url is not None]
     else:
         urls = []
-    return get_profil(user_name, tags if tags else [], urls, avatar_url)
+    cities = get_cities_from_user_id(user_id=user.id)
+    return get_profil(user_name, tags if tags else [], urls, cities, avatar_url)
 
 ################################################################################
 # End of File

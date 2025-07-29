@@ -34,6 +34,18 @@ def init_db():
     ################################################################################
 
     cursor.execute("""
+        CREATE TABLE IF NOT EXISTS cities (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            city TEXT NOT NULL,
+            user_id TEXT NOT NULL,
+            FOREIGN KEY (user_id) REFERENCES users(user_id)
+        )
+    """)
+    conn.commit()
+
+    ################################################################################
+
+    cursor.execute("""
     CREATE TABLE IF NOT EXISTS resume (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         chemin TEXT NOT NULL,

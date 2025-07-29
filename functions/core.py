@@ -80,6 +80,23 @@ class UrlModal(discord.ui.Modal, title="Ajouter une URL"):
 
 ################################################################################
 
+class CityModal(discord.ui.Modal, title="Ajouter une ville"):
+    ville = discord.ui.TextInput(label="Ville", placeholder="ex: Paris", required=True)
+
+    def __init__(self, user_id):
+        super().__init__()
+        self.user_id = user_id
+    
+    async def on_submit(self, interaction: discord.Interaction):
+        ville_value = self.ville.value.strip()
+        user_data = temp_data.get(self.user_id, {})
+        user_data.setdefault("cities", []).append(ville_value)
+        temp_data[self.user_id] = user_data
+
+        await interaction.response.send_message(f"✅ Ville ajoutée : **{ville_value}**", ephemeral=True)
+
+################################################################################
+
 def has_role(role_name: str):
     async def predicate(interaction: discord.Interaction) -> bool:
         return any(role.name == role_name for role in interaction.user.roles)
