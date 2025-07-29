@@ -36,7 +36,7 @@ async def add_city(interaction: discord.Interaction, city: str) -> None:
 ################################################################################
 
 @bot.tree.command(name="update_city", description="Met à jour une ville")
-async def update_city(interaction: discord.Interaction, new_city: str, old_city: str) -> None:
+async def update_city(interaction: discord.Interaction, new_city: str) -> None:
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
         return
@@ -47,7 +47,7 @@ async def update_city(interaction: discord.Interaction, new_city: str, old_city:
     
     await interaction.response.defer(ephemeral=True)
     
-    is_city_already_in_user = city_user.update_city_from_user(interaction.user.id,old_city,new_city)
+    is_city_already_in_user = city_user.update_city_from_user(interaction.user.id,new_city)
     if not is_city_already_in_user:
         await interaction.followup.send(content=f"Aucune ville trouvée pour votre profil. Veuillez utiliser la commande /add_city.",ephemeral=True)
         return
@@ -58,7 +58,7 @@ async def update_city(interaction: discord.Interaction, new_city: str, old_city:
 ################################################################################
 
 @bot.tree.command(name="delete_city", description="Supprime une ville")
-async def delete_city(interaction: discord.Interaction, city: str) -> None:
+async def delete_city(interaction: discord.Interaction) -> None:
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
         return
@@ -69,12 +69,12 @@ async def delete_city(interaction: discord.Interaction, city: str) -> None:
     
     await interaction.response.defer(ephemeral=True)
     
-    is_city_already_in_user = city_user.delete_city_from_user(interaction.user.id, city)
+    is_city_already_in_user = city_user.delete_city_from_user(interaction.user.id)
     if not is_city_already_in_user:
         await interaction.edit_original_response(content=f"Aucune ville trouvée pour votre profil. Veuillez utiliser la commande /add_city.",ephemeral=True)
         return
     else:
-        await interaction.edit_original_response(content=f"Ville {city} supprimée.",ephemeral=True)
+        await interaction.edit_original_response(content=f"Ville supprimée.",ephemeral=True)
         return
 
 ################################################################################

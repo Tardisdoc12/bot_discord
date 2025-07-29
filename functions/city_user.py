@@ -45,18 +45,18 @@ def add_city_to_user(user_id : int, city : str) -> None:
 
 ################################################################################
 
-def delete_city_from_user(user_id : int, city : str) -> None:
+def delete_city_from_user(user_id : int) -> None:
     if not verif_city_already_link(user_id):
         return False
-    delete_city(user_id, city)
+    delete_city(user_id)
     return True
 
 ################################################################################
 
-def update_city_from_user(user_id : int, old_city : str, new_city : str) -> None:
+def update_city_from_user(user_id : int, new_city : str) -> None:
     if not verif_city_already_link(user_id):
         return False
-    update_city(user_id, old_city, new_city)
+    update_city(user_id, new_city)
     return True
 
 ################################################################################

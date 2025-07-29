@@ -42,19 +42,19 @@ def add_city(user_id : int, city : str) -> None:
 
 ################################################################################
 
-def delete_city(user_id : int, city : str) -> None:
+def delete_city(user_id : int) -> None:
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("DELETE FROM cities WHERE user_id = ? AND city = ?", (user_id, city))
+    cursor.execute("DELETE FROM cities WHERE user_id = ?", (user_id))
     conn.commit()
     conn.close()
 
 ################################################################################
 
-def update_city(user_id : int, old_city : str, new_city : str) -> None:
+def update_city(user_id : int, new_city : str) -> None:
     conn = sqlite3.connect(base_de_donnees_path)
     cursor = conn.cursor()
-    cursor.execute("UPDATE cities SET city = ? WHERE user_id = ? AND city = ?", (new_city, user_id, old_city))
+    cursor.execute("UPDATE cities SET city = ? WHERE user_id = ?", (new_city, user_id))
     conn.commit()
     conn.close()
 

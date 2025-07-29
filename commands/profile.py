@@ -76,7 +76,7 @@ class UserProfileView(ViewCreationBase):
             interaction.user.name,
             data.get("tags",[]),
             data.get("urls",[]),
-            data.get("city",[]),
+            data.get("cities",[]),
             photo
         )
 
