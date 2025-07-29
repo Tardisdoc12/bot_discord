@@ -14,7 +14,7 @@ from functions.users import miss_profil
 
 ################################################################################
 
-@bot.tree.add_command(name="add_city", description="Ajoute une ville au profil")
+@bot.tree.command(name="add_city", description="Ajoute une ville au profil")
 async def add_city(interaction: discord.Interaction, city: str) -> None:
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
@@ -35,7 +35,7 @@ async def add_city(interaction: discord.Interaction, city: str) -> None:
 
 ################################################################################
 
-@bot.tree.add_command(name="update_city", description="Met à jour une ville")
+@bot.tree.command(name="update_city", description="Met à jour une ville")
 async def update_city(interaction: discord.Interaction, new_city: str, old_city: str) -> None:
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
@@ -57,7 +57,7 @@ async def update_city(interaction: discord.Interaction, new_city: str, old_city:
 
 ################################################################################
 
-@bot.tree.add_command(name="delete_city", description="Supprime une ville")
+@bot.tree.command(name="delete_city", description="Supprime une ville")
 async def delete_city(interaction: discord.Interaction, city: str) -> None:
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
