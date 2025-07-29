@@ -40,6 +40,15 @@ async def saving_pdf(chemin_complet, attachment, interaction : discord.Interacti
 
 ################################################################################
 
+class EmptyView(discord.ui.View):
+    def __init__(self, recruter_id = None, candidate_id = None, job_id = None, timeout = None):
+        super().__init__(timeout = timeout)
+        self.recruter_id = recruter_id
+        self.candidate_id = candidate_id
+        self.job_id = job_id
+
+################################################################################
+
 class TagSelectView(discord.ui.View):
     def __init__(self, user_id, tags_to_select, placeholder, message_success = f"✅ Tag enregistré avec succée!"):
         super().__init__(timeout=60)
@@ -101,6 +110,12 @@ def has_role(role_name: str):
     async def predicate(interaction: discord.Interaction) -> bool:
         return any(role.name == role_name for role in interaction.user.roles)
     return discord.app_commands.check(predicate)
+
+################################################################################
+
+def get_member_from_id(interaction: discord.Interaction, user_id: int) -> discord.Member:
+    user = discord.utils.get(interaction.guild.members, id=user_id)
+    return user
 
 ################################################################################
 # End of File

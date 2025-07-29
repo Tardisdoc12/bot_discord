@@ -21,10 +21,34 @@ from functions.jobs import (
 )
 from bdd.tags_jobs import all_tags_job
 from functions.jobs_card import create_job_card
-from functions.users import get_user_name,miss_profil
+from functions.users import get_user_name,miss_profil,get_user_id
 from functions.paginations_embed import EmbedPaginator
 from functions.view_creation_base import ViewCreationBase
-from functions.core import has_role
+from functions.core import has_role, EmptyView
+
+################################################################################
+
+class PostulationButton(discord.ui.Button):
+
+    def __init__(self, job_id, recruter_id, candidate_id):
+        super().__init__(label="Postuler", style=discord.ButtonStyle.primary)
+        self.job_id = job_id
+        self.recruter_id = recruter_id
+        self.candidate_id = candidate_id
+
+    async def callback(self, interaction: discord.Interaction):
+        if interaction.user.id != self.candidate_id:
+            await interaction.response.send_message("Ce menu ne t’appartient pas.", ephemeral=True)
+            return
+        recruter_member = interaction.guild.get_member(self.recruter_id)
+        try:
+            await recruter_member.send(
+                f"**{interaction.user.name}** a postuler pour l'offre {self.job_id}.\nSi vous souhiatez vous pouvez récupérer son cv via la commande /get_cv {interaction.user.name}.\nBonne journée!"
+            )
+        except discord.errors.Forbidden:
+            await interaction.response.send_message("Ce recruteur doit être contacter directement par vos soins.", ephemeral=True)
+            return
+        await interaction.response.send_message("Vous avez postuler pour cette offre.", ephemeral=True)
 
 ################################################################################
 
@@ -67,6 +91,42 @@ class JobOfferView(ViewCreationBase):
             user_name
         )
         await interaction.channel.send( "📝 Offre publiée", embed=embed_job)
+
+################################################################################
+
+class JobPostulatePaginator(discord.ui.View):
+    def __init__(self, embeds: list, recruters_id: list, candidate_id: int, jobs_id: list):
+        super().__init__(timeout=None)
+        self.rectuters_id = recruters_id
+        self.candidate_id = candidate_id
+        self.jobs_id = jobs_id
+        self.embeds = embeds
+        self.current_page = 0
+        self.add_item(
+            PostulationButton(
+                job_id = self.jobs_id[self.current_page],
+                recruter_id = self.rectuters_id[self.current_page],
+                candidate_id = self.candidate_id
+            )
+        )
+    
+    async def update_message(self, interaction: discord.Interaction):
+        embed = self.embeds[self.current_page]
+        for button in self.children:
+            if isinstance(button, PostulationButton):
+                button.job_id = self.jobs_id[self.current_page]
+                button.recruter_id = self.rectuters_id[self.current_page]
+        await interaction.response.edit_message(embed=embed, view=self)
+    
+    @discord.ui.button(label="➡️", style=discord.ButtonStyle.secondary)
+    async def next(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.current_page = (self.current_page + 1) % len(self.embeds)
+        await self.update_message(interaction)
+    
+    @discord.ui.button(label="⬅️", style=discord.ButtonStyle.secondary)
+    async def previous(self, interaction: discord.Interaction, button: discord.ui.Button):
+        self.current_page = (self.current_page - 1) % len(self.embeds)
+        await self.update_message(interaction)
 
 ################################################################################
 
@@ -117,9 +177,18 @@ async def get_job_from_id(interaction: discord.Interaction, job_id : int):
 
     embed_job = create_job_card(title, job_id, description, tags_job, url, company, salaire, horaires, user_name)
 
+    if int(user_id) != interaction.user.id:
+        view = EmptyView(recruter_id = user_id, job_id = job_id, candidate_id = interaction.user.id)
+        view.add_item(PostulationButton(recruter_id = user_id, job_id = job_id, candidate_id = interaction.user.id))
+        await interaction.response.send_message(
+            embed=embed_job,
+            view=view
+        )
+        return
     await interaction.response.send_message(
         embed=embed_job
     )
+
 
 ################################################################################
 
@@ -142,7 +211,10 @@ async def get_jobs_tag(interaction: discord.Interaction, tag : str):
     if jobs == []:
         await interaction.response.send_message("Aucune offre trouvée.", ephemeral=True)
         return
+    
     embeds_pages = []
+    recruters_id = []
+    jobs_id = []
     for job in jobs:
         job_id, title, company, description, user_id, url, salaire, horaires = job
         tags_job = all_tags_job(job_id)
@@ -152,10 +224,17 @@ async def get_jobs_tag(interaction: discord.Interaction, tag : str):
             tags_job = ",\n".join(tags_job)
 
         user_name = get_user_name(user_id)[0]
-
+        recruters_id.append(int(user_id))
+        jobs_id.append(int(job_id))
         embed_job = create_job_card(title, job_id, description, tags_job, url, company, salaire, horaires, user_name)
         embeds_pages.append(embed_job)
-    embeds_paginator = EmbedPaginator(interaction.user.id, embeds_pages)
+    
+    embeds_paginator = JobPostulatePaginator(
+        embeds = embeds_pages,
+        recruters_id = recruters_id,
+        candidate_id = interaction.user.id,
+        jobs_id = jobs_id
+    )
     
     await interaction.response.send_message(embed=embeds_pages[0], view=embeds_paginator)
 
@@ -182,6 +261,18 @@ async def get_jobs_from_user(interaction: discord.Interaction, user_name : str =
         embed_job = create_job_card(title, job_id, description, tags_job, url, company, salaire, horaires, user)
         embeds_pages.append(embed_job)
     embeds_paginator = EmbedPaginator(interaction.user.id, embeds_pages)
+    recruter_id = get_user_id(user)
+    if recruter_id is None:
+        await interaction.response.send_message("Problème dans la base de données. Il y a une offre sans recruteur.", ephemeral=True)
+        return
+    if recruter_id != interaction.user.id:
+        embeds_paginator.add_item(
+            PostulationButton(
+                recruter_id = recruter_id,
+                job_id = job_id,
+                candidate_id = interaction.user.id
+            )
+        )
     
     await interaction.response.send_message(embed=embeds_pages[0], view=embeds_paginator)
 
