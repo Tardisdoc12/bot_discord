@@ -104,7 +104,7 @@ async def send_message_recruteur_candidat(interaction: discord.Interaction, id_c
     sent = await channel.send(tags_message, view=ViewCreationRecruteurCandidat())
     await interaction.followup.send("✅ Message envoyé.",ephemeral=True)
     # Sauvegarde de l'id du message et du channel
-    with open("bdds/message_id.txt","w") as file:
+    with open("/mount/bdd/message_id.txt","w") as file:
         file.write(str(sent.id) + "\n")
         if id_channel:
             file.write(str(id_channel) + "\n")

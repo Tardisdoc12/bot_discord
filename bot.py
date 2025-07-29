@@ -40,9 +40,9 @@ class PersistentViewBot(commands.Bot):
     async def setup_hook(self) -> None:
 
         self.add_view(ViewCreationRecruteurCandidat())
-        if os.path.exists("bdds/message_id.txt"):
+        if os.path.exists("/mount/bdd/message_id.txt"):
             try:
-                with open("bdds/message_id.txt", "r") as f:
+                with open("/mount/bdd/message_id.txt", "r") as f:
                     message_id = int(f.readline().strip())
                     channel = self.get_channel(f.readline().strip())
                     if channel:

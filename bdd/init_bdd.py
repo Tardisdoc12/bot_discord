@@ -12,7 +12,7 @@ import sqlite3
 ################################################################################
 
 def init_db():
-    base_de_donnees_path = "bdds"
+    base_de_donnees_path = "/mount/bdd"
     if not os.path.exists(base_de_donnees_path):
         os.mkdir(base_de_donnees_path)
 

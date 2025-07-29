@@ -11,7 +11,7 @@ from bdd.users import get_user_id_from_user_name
 
 ################################################################################
 
-base_de_donnees_path = "bdds/jobs.db"
+base_de_donnees_path = "/mount/bdd/jobs.db"
 
 ################################################################################
 
