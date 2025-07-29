@@ -23,7 +23,7 @@ async def add_city(interaction: discord.Interaction, city: str) -> None:
     if not isGoodChannel:
         await interaction.response.send_message("Vous devez utiliser cette commande dans les salons autorisés",ephemeral=True)
         return
-    await interaction.response.defer()
+    await interaction.response.defer(ephemeral=True)
     
     is_city_already_in_user = city_user.add_city_to_user(interaction.user.id, city)
     if not is_city_already_in_user:
@@ -45,7 +45,7 @@ async def update_city(interaction: discord.Interaction, new_city: str, old_city:
         await interaction.response.send_message("Vous devez utiliser cette commande dans les salons autorisés",ephemeral=True)
         return
     
-    await interaction.response.defer()
+    await interaction.response.defer(ephemeral=True)
     
     is_city_already_in_user = city_user.update_city_from_user(interaction.user.id, new_city, old_city)
     if not is_city_already_in_user:
@@ -67,7 +67,7 @@ async def delete_city(interaction: discord.Interaction, city: str) -> None:
         await interaction.response.send_message("Vous devez utiliser cette commande dans les salons autorisés",ephemeral=True)
         return
     
-    await interaction.response.defer()
+    await interaction.response.defer(ephemeral=True)
     
     is_city_already_in_user = city_user.delete_city_from_user(interaction.user.id, city)
     if not is_city_already_in_user:
