@@ -27,10 +27,10 @@ async def add_city(interaction: discord.Interaction, city: str) -> None:
     
     is_city_already_in_user = city_user.add_city_to_user(interaction.user.id, city)
     if not is_city_already_in_user:
-        await interaction.edit_original_response(content=f"Ville {city} ajoutée.",ephemeral=True)
+        await interaction.followup.send(content=f"Ville {city} ajoutée.",ephemeral=True)
         return
     else:
-        await interaction.edit_original_response(content=f"une ville a déjà été ajoutée veuillez utiliser la commande /update_city.",ephemeral=True)
+        await interaction.followup.send(content=f"une ville a déjà été ajoutée veuillez utiliser la commande /update_city.",ephemeral=True)
         return
 
 ################################################################################
@@ -49,10 +49,10 @@ async def update_city(interaction: discord.Interaction, new_city: str, old_city:
     
     is_city_already_in_user = city_user.update_city_from_user(interaction.user.id, new_city, old_city)
     if not is_city_already_in_user:
-        await interaction.edit_original_response(content=f"Aucune ville trouvée pour votre profil. Veuillez utiliser la commande /add_city.",ephemeral=True)
+        await interaction.followup.send(content=f"Aucune ville trouvée pour votre profil. Veuillez utiliser la commande /add_city.",ephemeral=True)
         return
     else:
-        await interaction.edit_original_response(content=f"Ville {new_city} mis à jour.",ephemeral=True)
+        await interaction.followup.send(content=f"Ville {new_city} mis à jour.",ephemeral=True)
         return
 
 ################################################################################
