@@ -26,7 +26,7 @@ message_template = """
 Bienvenue à tous sur le serveur **{guild_name}** !
 
 Je suis un bot pour les candidats et les recruteurs.
-Je suis le meilleur bot pour vous mettre en contacte.
+Je suis le meilleur bot pour vous mettre en contact.
 
 Vous pouvez cliquer sur un bouton ou les deux selon si vous êtes un recruteur ou un candidat.
 
