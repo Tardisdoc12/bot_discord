@@ -47,7 +47,7 @@ async def update_city(interaction: discord.Interaction, new_city: str, old_city:
     
     await interaction.response.defer(ephemeral=True)
     
-    is_city_already_in_user = city_user.update_city_from_user(interaction.user.id, new_city, old_city)
+    is_city_already_in_user = city_user.update_city_from_user(interaction.user.id,old_city,new_city)
     if not is_city_already_in_user:
         await interaction.followup.send(content=f"Aucune ville trouvée pour votre profil. Veuillez utiliser la commande /add_city.",ephemeral=True)
         return
