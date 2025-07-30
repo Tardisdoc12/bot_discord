@@ -25,7 +25,7 @@ from bdd.resume_bdd import (
 
 async def download_pdf(interaction: discord.Interaction, file: discord.Attachment):
     #création du dossier
-    stockage_pdf_path = "pdfs"
+    stockage_pdf_path = "/mount/bdd/pdfs"
     if not os.path.exists(stockage_pdf_path):
         os.mkdir(stockage_pdf_path)
 
