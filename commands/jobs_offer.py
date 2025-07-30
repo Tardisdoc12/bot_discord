@@ -40,7 +40,7 @@ class PostulationButton(discord.ui.Button):
         if interaction.user.id != self.candidate_id:
             await interaction.response.send_message("Ce menu ne t’appartient pas.", ephemeral=True)
             return
-        recruter_member = interaction.guild.get_member(self.recruter_id)
+        recruter_member = await interaction.guild.fetch_member(self.recruter_id)
         try:
             await recruter_member.send(
                 f"**{interaction.user.name}** a postuler pour l'offre {self.job_id}.\nSi vous souhiatez vous pouvez récupérer son cv via la commande /get_cv {interaction.user.name}.\nBonne journée!"
