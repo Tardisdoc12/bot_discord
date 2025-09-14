@@ -89,9 +89,7 @@ async def get_profile(interaction: discord.Interaction, user_name : str = None) 
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
         return
-    isGoodChannel = await check_channel_id(interaction, id_channel_command)
-    if not isGoodChannel:
-        return
+
     user_name = user_name if user_name else interaction.user.name
     profile_embed = await create_profile(user_name, interaction)
     if profile_embed is None:
@@ -122,9 +120,6 @@ async def create_profile_user(interaction: discord.Interaction):
     register_member(interaction)
     if not is_creating_profil(interaction):
         await interaction.response.send_message("Vous avez deja un profile.",ephemeral=True)
-        return
-    isGoodChannel = await check_channel_id(interaction, id_channel_command)
-    if not isGoodChannel:
         return
     await interaction.response.send_message("Créer le profile", view=UserProfileView(interaction.user.id), ephemeral=True)
 

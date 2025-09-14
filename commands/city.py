@@ -19,10 +19,6 @@ async def add_city(interaction: discord.Interaction, city: str) -> None:
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
         return
-    isGoodChannel = await check_channel_id(interaction, id_channel_command)
-    if not isGoodChannel:
-        await interaction.response.send_message("Vous devez utiliser cette commande dans les salons autorisés",ephemeral=True)
-        return
     await interaction.response.defer(ephemeral=True)
     
     is_city_already_in_user = city_user.add_city_to_user(interaction.user.id, city)
@@ -39,10 +35,6 @@ async def add_city(interaction: discord.Interaction, city: str) -> None:
 async def update_city(interaction: discord.Interaction, new_city: str) -> None:
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
-        return
-    isGoodChannel = await check_channel_id(interaction, id_channel_command)
-    if not isGoodChannel:
-        await interaction.response.send_message("Vous devez utiliser cette commande dans les salons autorisés",ephemeral=True)
         return
     
     await interaction.response.defer(ephemeral=True)
@@ -61,10 +53,6 @@ async def update_city(interaction: discord.Interaction, new_city: str) -> None:
 async def delete_city(interaction: discord.Interaction) -> None:
     if miss_profil(interaction):
         await interaction.response.send_message("Vous devez créer un profile avec la commande /create_profile",ephemeral=True)
-        return
-    isGoodChannel = await check_channel_id(interaction, id_channel_command)
-    if not isGoodChannel:
-        await interaction.response.send_message("Vous devez utiliser cette commande dans les salons autorisés",ephemeral=True)
         return
     
     await interaction.response.defer(ephemeral=True)
