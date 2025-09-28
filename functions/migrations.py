@@ -42,7 +42,8 @@ def migration_data(user_name, new_user_id, new_user_name):
         for tag in tags:
             add_tag_to_user(new_user_id, tag)
         for url in urls:
-            add_url(new_user_id, url)
+            for url_int in url:
+                add_url(new_user_id, url_int)
         if resume_path is not None:
             create_user_cv_path(new_user_id, resume_path[0])
         for city in city:
