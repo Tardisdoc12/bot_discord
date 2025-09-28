@@ -19,6 +19,7 @@ logging.basicConfig(level=logging.INFO)
 
 
 def migration_data(user_name, new_user_id, new_user_name):
+    logging.info(f"on a les types : {type(user_name)}, {type(new_user_id)}, {type(new_user_name)}")
     #User A Informations
     try:
         user_id = get_user_id_from_user_name(user_name)
