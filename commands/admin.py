@@ -121,11 +121,12 @@ async def migration(interaction: discord.Interaction, old_user_id: str, new_user
         return
     user = await bot.fetch_user(int(new_user_id))
     old_user = await bot.fetch_user(int(old_user_id))
+    print(user.name, old_user.name)
     response = migration_data(old_user.name, int(new_user_id), user.name)
     if response["success"]:
-        await interaction.followup.send(response.message,ephemeral=True)
+        await interaction.response.send_message(response.message,ephemeral=True)
     else:
-        await interaction.followup.send(response.message,ephemeral=True)
+        await interaction.response.send_message(response.message,ephemeral=True)
 
 ################################################################################
 
