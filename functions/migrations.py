@@ -13,6 +13,10 @@ from bdd.city import *
 import logging
 
 ################################################################################
+logging.basicConfig(level=logging.INFO)
+
+################################################################################
+
 
 def migration_data(user_name, new_user_id, new_user_name):
     #User A Informations
@@ -22,7 +26,8 @@ def migration_data(user_name, new_user_id, new_user_name):
     resume_path = get_user_cv_path_from_name(user_name)
     city = get_cities_from_user_id(user_id)
     
-    logging.info(user_id, tags, urls, resume_path, city)
+    logging.info(f"user_id={user_id}, tags={tags}, urls={urls}, resume_path={resume_path}, city={city}")
+
     try:
         #User B Informations
         if not verify_user_already_exist(new_user_id):

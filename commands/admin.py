@@ -17,7 +17,7 @@ from functions.view_recuteur_candidat import ViewCreationRecruteurCandidat
 from functions.migrations import migration_data
 
 ################################################################################
-
+logging.basicConfig(level=logging.INFO)
 admin = app_commands.Group(name="admin", description="Commandes admin")
 bot.tree.add_command(admin)
 
@@ -121,12 +121,12 @@ async def migration(interaction: discord.Interaction, old_user_id: str, new_user
         return
     user = await bot.fetch_user(int(new_user_id))
     old_user = await bot.fetch_user(int(old_user_id))
-    logging.info(user.name, old_user.name)
+    logging.info(f"Migration demandée : old={old_user.name}, new={user.name}")
     response = migration_data(old_user.name, int(new_user_id), user.name)
     if response["success"]:
-        await interaction.response.send_message(response.message,ephemeral=True)
+        await interaction.response.send_message(response["message"],ephemeral=True)
     else:
-        await interaction.response.send_message(response.message,ephemeral=True)
+        await interaction.response.send_message(response["message"],ephemeral=True)
 
 ################################################################################
 
