@@ -20,12 +20,17 @@ logging.basicConfig(level=logging.INFO)
 
 def migration_data(user_name, new_user_id, new_user_name):
     #User A Informations
-    user_id = get_user_id_from_user_name(user_name)
-    tags = get_tags_from_user_id(user_id)
-    urls = get_urls_from_user_id(user_id)
-    resume_path = get_user_cv_path_from_name(user_name)
-    city = get_cities_from_user_id(user_id)
+    try:
+        user_id = get_user_id_from_user_name(user_name)
+        tags = get_tags_from_user_id(user_id)
+        urls = get_urls_from_user_id(user_id)
+        resume_path = get_user_cv_path_from_name(user_name)
+        city = get_cities_from_user_id(user_id)
+    except Exception as e:
+        logging.info(e)
+        return {"success": False, "message": f"Migration echouée : city: {city}, tags: {tags}, urls: {urls}, resume_path: {resume_path}"}
     
+    logging.info("on a récupérer les données de l'utilisateur")
     logging.info(f"user_id={user_id}, tags={tags}, urls={urls}, resume_path={resume_path}, city={city}")
 
     try:
