@@ -14,6 +14,7 @@ from bot import bot
 from roles.role_base import get_or_create_role, get_or_create_channel
 from bdd.tags import all_tags, tag_by_channels, channels_for_everyone, tag_kind_people
 from functions.view_recuteur_candidat import ViewCreationRecruteurCandidat
+from functions.migrations import migration_data
 
 ################################################################################
 
@@ -110,6 +111,20 @@ async def send_message_recruteur_candidat(interaction: discord.Interaction, id_c
             file.write(str(id_channel) + "\n")
         else:
             file.write(str(sent.channel.id) + "\n")
+
+################################################################################
+
+@bot.tree.command(name="migration", description="Migration des données d'un utilisateur vers un autre (admin)")
+async def migration(interaction: discord.Interaction, user_id: int):
+    if not interaction.user.guild_permissions.administrator:
+        await interaction.response.send_message("❌ Tu dois être admin.", ephemeral=True)
+        return
+    user = await bot.fetch_user(user_id)
+    response = await migration_data(interaction.user.name, user_id, user.name)
+    if response["success"]:
+        interaction.followup.send(response.message,ephemeral=True)
+    else:
+        interaction.followup.send(response.message,ephemeral=True)
 
 ################################################################################
 
