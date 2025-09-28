@@ -10,6 +10,7 @@ from bdd.resume_bdd import *
 from bdd.urls import *
 from bdd.users import *
 from bdd.city import *
+import logging
 
 ################################################################################
 
@@ -21,7 +22,7 @@ def migration_data(user_name, new_user_id, new_user_name):
     resume_path = get_user_cv_path_from_name(user_name)
     city = get_cities_from_user_id(user_id)
     
-    print(user_id, tags, urls, resume_path, city)
+    logging.info(user_id, tags, urls, resume_path, city)
     try:
         #User B Informations
         if not verify_user_already_exist(new_user_id):
@@ -37,7 +38,7 @@ def migration_data(user_name, new_user_id, new_user_name):
             
         update_profil_user(new_user_id)
     except Exception as e:
-        print(e)
+        logging.info(e)
         return {"success": False, "message": f"Migration echouée : city: {city}, tags: {tags}, urls: {urls}, resume_path: {resume_path}"}
     return {"success": True, "message": f"Migration effectuée : city: {city}, tags: {tags}, urls: {urls}, resume_path: {resume_path}"}
     
