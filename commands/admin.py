@@ -114,7 +114,7 @@ async def send_message_recruteur_candidat(interaction: discord.Interaction, id_c
 
 ################################################################################
 
-@bot.tree.command(name="migrations", description="Migration des données d'un utilisateur vers un autre (admin)")
+@admin.command(name="migrations", description="Migration des données d'un utilisateur vers un autre (admin)")
 async def migration(interaction: discord.Interaction, old_user_id: int, new_user_id: int):
     if not interaction.user.guild_permissions.administrator:
         await interaction.response.send_message("❌ Tu dois être admin.", ephemeral=True)
