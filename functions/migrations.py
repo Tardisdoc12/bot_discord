@@ -23,6 +23,7 @@ def migration_data(user_name, new_user_id, new_user_name):
     #User A Informations
     try:
         user_id = get_user_id_from_user_name(user_name)
+        logging.info(f"on a le type: {type(user_id)}")
         tags = get_tags_from_user_id(user_id)
         urls = get_urls_from_user_id(user_id)
         resume_path = get_user_cv_path_from_name(user_name)
